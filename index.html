@@ -14,7 +14,7 @@
       --header-bg:#1e1e1e;
       --header-height:90px;
       --header-height-scrolled:60px;
-      --bg-shift:0px; /* используется для параллакса */
+      --bg-shift:0px; /* для параллакса */
     }
 
     /* ===== Header ===== */
@@ -27,12 +27,14 @@
       z-index:1000;
       box-shadow:0 2px 8px rgba(0,0,0,0.4);
       cursor:pointer; /* клик — наверх */
+      -webkit-tap-highlight-color: transparent;
     }
     header.scrolled{height:var(--header-height-scrolled);}
     #main-logo{
       height:100%; width:auto; padding:0; /* логотип ровно по высоте полосы */
       transition:filter .35s ease;
       display:block;
+      -webkit-user-drag:none;
     }
     header.scrolled #main-logo{filter:drop-shadow(0 0 4px rgba(0,0,0,.2));}
     #header-spacer{height:var(--header-height);transition:height .35s ease;}
@@ -82,77 +84,67 @@
     footer .contacts a:hover{background:#ffcc00;color:#000;}
 
     /* ===== Modal ===== */
-    .modal{display:none;position:fixed;z-index:2000;padding-top:60px;left:0;top:0;width:100%;height:100%;overflow:auto;
+    .modal{display:none;position:fixed;z-index:2000;inset:0;padding-top:60px;overflow:auto;
       background-color:rgba(0,0,0,0.8);animation:fadeIn 0.4s ease;}
     @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
     .modal-content{background-color:#2a2a2a;margin:auto;padding:20px;border-radius:12px;width:90%;max-width:700px;position:relative;
       text-align:center;box-shadow:0 0 25px rgba(0,0,0,0.4);transform:scale(0.95);opacity:0;animation:modalAppear 0.4s forwards;}
     @keyframes modalAppear{to{transform:scale(1);opacity:1;}}
-    .close{color:#fff;position:absolute;top:10px;right:20px;font-size:28px;cursor:pointer;transition:0.2s;}
+    .close{
+      color:#fff;position:absolute;top:10px;right:20px;font-size:28px;cursor:pointer;transition:0.2s;
+      z-index:3001; -webkit-tap-highlight-color: transparent;
+    }
     .close:hover{color:#ffcc00;}
     .carousel{position:relative;}
     .carousel img{width:100%;border-radius:8px;margin-bottom:10px;opacity:0;transition:opacity 0.4s ease;}
     .carousel img.loaded{opacity:1;}
-    .loader{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+    .loader{
+      display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      z-index:2990; pointer-events:none; /* не блокируем крестик/стрелки */
+    }
     .dot{display:inline-block;width:10px;height:10px;margin:0 3px;background:#ffcc00;border-radius:50%;animation:bounce 1s infinite ease-in-out;}
     .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;}
     @keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
-    .prev,.next{cursor:pointer;position:absolute;top:45%;padding:10px;background:rgba(0,0,0,0.4);border:none;color:white;font-size:22px;
-      border-radius:50%;transform:translateY(-50%);transition:background 0.3s;}
-    .prev:hover,.next:hover{background:rgba(255,255,255,0.2);}
-    .prev{left:10px;} .next{right:10px;}
+
+    /* ===== Arrows (без кружков, масштаб при ховере/тапе) ===== */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%) scale(1);
+      font-size: 42px;
+      color: white;
+      background: none;
+      border: none;
+      opacity: 0.8;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      z-index: 3000;
+      user-select: none;
+      outline: none;
+      -webkit-appearance: none; appearance: none;
+      -webkit-tap-highlight-color: transparent; /* убираем серый круг на iOS */
+      border-radius: 0; box-shadow:none;
+    }
+    .prev:hover, .next:hover,
+    .prev:active, .next:active {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.3);
+    }
+    .prev { left: 15px; }
+    .next { right: 15px; }
+
     .rental-form{text-align:center;margin-top:15px;}
     .rental-form label{display:block;margin-bottom:8px;font-weight:500;font-size:1.2rem;}
     .date-options{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:15px;flex-wrap:wrap;}
     #startDate,#endDate{padding:8px;border-radius:5px;border:none;outline:none;}
-    #monthlyBtn{padding:8px 15px;border-radius:5px;border:none;cursor:pointer;background:#ffcc00;font-weight:bold;transition:0.3s;}
+    #monthlyBtn{
+      padding:8px 15px;border-radius:5px;border:none;cursor:pointer;background:#ffcc00;font-weight:bold;transition:0.3s;
+      -webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent;
+    }
     #monthlyBtn:hover{background:#ffe680;}
     .contact-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
     .contact-links a{background:#fff;color:#000;padding:10px 20px;border-radius:6px;font-weight:600;transition:0.3s;}
     .contact-links a:hover{background:#ffcc00;color:#222;}
-    /* гарантируем кликабельность крестика поверх всего */
-.close{
-  z-index: 3001;           /* выше всего в модалке */
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 28px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-/* стрелки тоже поверх изображения/лоадера */
-.prev, .next {
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%) scale(1);
-  font-size: 42px;
-  color: white;
-  background: none;
-  border: none;
-  opacity: 0.7;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  z-index: 3000;
-  user-select: none;
-}
-.prev:hover, .next:hover,
-.prev:active, .next:active {
-  opacity: 1;
-  transform: translateY(-50%) scale(1.3); /* стрелка увеличивается */
-}
-.prev { left: 15px; }
-.next { right: 15px; }
-
-
-
-/* лоадер ниже крестика и стрелок, но поверх изображения */
-.loader{ z-index: 2990; }
-
-/* чтобы клики по изображению не мешали закрытию по фону */
-.modal{ display:none; position:fixed; z-index:2000; inset:0; }
-.modal-content{ position:relative; margin:auto; }
-
   </style>
 </head>
 <body>
@@ -166,7 +158,7 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>FULL INSURANCE INCLUDED</h1>
+    <h1>TRUE CARS ONLY</h1>
     <h2>Low mileage. High trims. Best experience.</h2>
     <p>We are honest car rental in Dubai without deposit</p>
     <h2>DELIVERY - FREE!</h2>
@@ -231,10 +223,10 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <div class="carousel">
-        <button class="prev">&#10094;</button>
+        <button class="prev" aria-label="Previous">&#10094;</button>
         <img id="modalImage" src="" alt="Car image">
         <div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        <button class="next">&#10095;</button>
+        <button class="next" aria-label="Next">&#10095;</button>
       </div>
       <h2 id="carTitle"></h2>
       <div class="rental-form">
@@ -252,131 +244,154 @@
     </div>
   </div>
 
-<script>
-  /* ===== Header: уменьшение и клик-наверх ===== */
-  const header = document.getElementById('top-header');
-  const spacer = document.getElementById('header-spacer');
-  header.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  <script>
+    /* ===== Header: уменьшение и клик-наверх ===== */
+    const header = document.getElementById('top-header');
+    const spacer = document.getElementById('header-spacer');
+    header.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-  function syncSpacer(){ spacer.style.height = header.offsetHeight + 'px'; }
-  function onScroll(){
-    const scrolled = window.scrollY > 60;
-    header.classList.toggle('scrolled', scrolled);
-    syncSpacer();
-    const y = Math.min(window.scrollY * 0.35, 250);
-    document.documentElement.style.setProperty('--bg-shift', `-${y}px`);
-  }
-  window.addEventListener('scroll', onScroll);
-  window.addEventListener('resize', syncSpacer);
-  window.addEventListener('load', () => { syncSpacer(); onScroll(); });
-
-  /* ===== Modal & Gallery ===== */
-  const modal = document.getElementById("carModal"),
-        modalImg = document.getElementById("modalImage"),
-        carTitle = document.getElementById("carTitle"),
-        closeBtn = document.querySelector(".close"),
-        prevBtn = document.querySelector(".prev"),
-        nextBtn = document.querySelector(".next"),
-        loader = document.querySelector(".loader"),
-        startDateInput = document.getElementById("startDate"),
-        endDateInput = document.getElementById("endDate"),
-        monthlyBtn = document.getElementById("monthlyBtn"),
-        whatsappLink = document.getElementById("whatsappLink"),
-        telegramLink = document.getElementById("telegramLink");
-
-  let currentImages = [], currentIndex = 0, selectedCar = "";
-
-  // Открытие модалки по клику на карточку
-document.querySelectorAll(".car-card").forEach(card=>{
-  card.addEventListener("click", async (e)=>{
-    e.stopPropagation();
-    selectedCar = card.querySelector("h3").textContent;
-    carTitle.textContent = selectedCar;
-
-    const slug = selectedCar.toLowerCase().split(" ")[1];
-    const base = "https://raw.githubusercontent.com/truecarsae/truecars-site/truecarsae-images/cars/" + slug + "/";
-
-    // Проверяем до 20 файлов
-    const promises = [];
-    for (let i = 1; i <= 20; i++) {
-      const url = `${base}${i}.png`;
-      promises.push(fetch(url, {method: "HEAD"}).then(res => res.ok ? url : null));
+    function syncSpacer(){ spacer.style.height = header.offsetHeight + 'px'; }
+    function onScroll(){
+      const scrolled = window.scrollY > 60;
+      header.classList.toggle('scrolled', scrolled);
+      syncSpacer();
+      // Параллакс: чем больше прокрутка, тем сильнее смещение фона вверх
+      const y = Math.min(window.scrollY * 0.35, 250); // ограничим смещение
+      document.documentElement.style.setProperty('--bg-shift', `-${y}px`);
     }
-    const results = await Promise.all(promises);
-    currentImages = results.filter(Boolean);
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', syncSpacer);
+    window.addEventListener('load', () => { syncSpacer(); onScroll(); });
 
-    // Если в GitHub нет фото — используем то, что уже стоит на карточке
-    if (currentImages.length === 0) {
-      const cardImg = card.querySelector("img").src;
-      currentImages = [cardImg];
+    /* ===== Вспомогательное: HEAD с таймаутом ===== */
+    function headWithTimeout(url, timeoutMs=3000){
+      const controller = new AbortController();
+      const t = setTimeout(()=>controller.abort(), timeoutMs);
+      return fetch(url, {method:'HEAD', signal: controller.signal})
+        .then(r => { clearTimeout(t); return r; })
+        .catch(() => { clearTimeout(t); return { ok:false }; });
     }
 
-    currentIndex = 0;
-    showImage();
-    modal.style.display = "block";
-    updateLinks();
-  });
-});
+    /* ===== Modal & Gallery ===== */
+    const modal = document.getElementById("carModal"),
+          modalImg = document.getElementById("modalImage"),
+          carTitle = document.getElementById("carTitle"),
+          closeBtn = document.querySelector(".close"),
+          prevBtn = document.querySelector(".prev"),
+          nextBtn = document.querySelector(".next"),
+          loader = document.querySelector(".loader"),
+          startDateInput = document.getElementById("startDate"),
+          endDateInput = document.getElementById("endDate"),
+          monthlyBtn = document.getElementById("monthlyBtn"),
+          whatsappLink = document.getElementById("whatsappLink"),
+          telegramLink = document.getElementById("telegramLink");
 
+    let currentImages = [], currentIndex = 0, selectedCar = "";
 
-  function showImage(){
-    loader.style.display = "block";
-    modalImg.classList.remove("loaded");
-    const img = new Image();
-    img.src = currentImages[currentIndex];
-    img.onload = () => {
-      modalImg.src = img.src;
-      modalImg.classList.add("loaded");
-      loader.style.display = "none";
-    };
-  }
+    // Открытие модалки по клику на карточку
+    document.querySelectorAll(".car-card").forEach(card=>{
+      card.addEventListener("click", async (e)=>{
+        e.stopPropagation(); // не даём клику "по фону" закрыть модалку
+        selectedCar = card.querySelector("h3").textContent;
+        carTitle.textContent = selectedCar;
 
-  prevBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
-  nextBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
+        const slug = (selectedCar.toLowerCase().split(" ")[1] || "").replace(/[^a-z0-9\-]/g,'');
+        const base = "https://raw.githubusercontent.com/truecarsae/truecars-site/truecarsae-images/cars/" + slug + "/";
 
-  // --- Закрытие: крестик всегда работает и перекрывает всё
-  function closeModal(){ modal.style.display = "none"; }
-  closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
+        // Проверяем до 20 файлов HEAD-запросами (батчами по 5 для отзывчивости)
+        const MAX = 10, BATCH = 3;
+        let found = [];
+        for (let start = 1; start <= MAX; start += BATCH){
+          const batch = [];
+          for (let i = start; i < start + BATCH && i <= MAX; i++){
+            const url = `${base}${i}.png`;
+            batch.push(headWithTimeout(url).then(res => res.ok ? url : null));
+          }
+          const part = await Promise.all(batch);
+          found = found.concat(part.filter(Boolean));
+          // небольшая пауза между батчами, чтобы не забивать сеть
+          await new Promise(r=>setTimeout(r, 60));
+        }
+        currentImages = found;
 
-  // --- Клик по фону (правильная проверка: клик именно по оверлею)
-  modal.addEventListener("click",(e)=>{
-    if (e.target === modal) closeModal();
-  });
+        // Fallback: если в GitHub нет фото — берём картинку из карточки и показываем сразу (без подвисания)
+        if (currentImages.length === 0) {
+          const cardImg = card.querySelector("img").src;
+          currentImages = [cardImg];
+          currentIndex = 0;
+          loader.style.display = "block";
+          modalImg.classList.remove("loaded");
+          modal.style.display = "block";
+          // Мгновенно показываем fallback (без ожидания onload)
+          modalImg.src = cardImg;
+          modalImg.classList.add("loaded");
+          loader.style.display = "none";
+          updateLinks();
+          return;
+        }
 
-  // --- Свайпы на мобильных по изображению
-  let startX=0,endX=0;
-  modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;});
-  modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;});
-  modalImg.addEventListener("touchend",()=>{
-    if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
-    else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
-    startX=0; endX=0;
-  });
+        currentIndex = 0;
+        showImage();
+        modal.style.display = "block";
+        updateLinks();
+      });
+    });
 
-  /* ===== Ссылки WhatsApp / Telegram ===== */
-  function updateLinks(){
-    const start = startDateInput.value;
-    const end = endDateInput.value;
-    let period = "";
-
-    if (monthlyBtn.dataset.selected === "true") {
-      period = "на помесячной основе";
-    } else if (start && end) {
-      period = `с ${start} по ${end}`;
+    function showImage(){
+      loader.style.display = "block";
+      modalImg.classList.remove("loaded");
+      const img = new Image();
+      img.src = currentImages[currentIndex];
+      img.onload = () => {
+        modalImg.src = img.src;
+        modalImg.classList.add("loaded");
+        loader.style.display = "none";
+      };
     }
 
-    const text = encodeURIComponent(`Здравствуйте! Я хочу арендовать ${selectedCar} ${period}. Подскажите, пожалуйста, доступна ли машина?`);
-    whatsappLink.href = `https://wa.me/971506402718?text=${text}`;
-    telegramLink.href = `https://t.me/+971506402718?text=${text}`;
-  }
+    prevBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
+    nextBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
 
-  startDateInput.addEventListener("change",updateLinks);
-  endDateInput.addEventListener("change",updateLinks);
-  monthlyBtn.addEventListener("click",()=>{
-    monthlyBtn.dataset.selected = monthlyBtn.dataset.selected === "true" ? "false" : "true";
-    monthlyBtn.style.background = monthlyBtn.dataset.selected === "true" ? "#ffe680" : "#ffcc00";
-    updateLinks();
-  });
-</script>
+    // Закрытие: крестик + клик по фону
+    function closeModal(){ modal.style.display = "none"; }
+    closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
+    modal.addEventListener("click",(e)=>{ if (e.target === modal) closeModal(); });
+
+    // Свайпы на мобильных по изображению
+    let startX=0,endX=0;
+    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;});
+    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;});
+    modalImg.addEventListener("touchend",()=>{
+      if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
+      else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
+      startX=0; endX=0;
+    });
+
+    /* ===== Ссылки WhatsApp / Telegram ===== */
+    function updateLinks(){
+      const start = startDateInput.value;
+      const end = endDateInput.value;
+      let period = "";
+
+      if (monthlyBtn.dataset.selected === "true") {
+        period = "на помесячной основе";
+      } else if (start && end) {
+        period = `с ${start} по ${end}`;
+      }
+
+      const text = encodeURIComponent(`Здравствуйте! Я хочу арендовать ${selectedCar} ${period}. Подскажите, пожалуйста, доступна ли машина?`);
+      // не меняем ваши ссылки
+      whatsappLink.href = `https://wa.me/971506402718?text=${text}`;
+      telegramLink.href = `https://t.me/+971506402718?text=${text}`;
+    }
+
+    startDateInput.addEventListener("change",updateLinks);
+    endDateInput.addEventListener("change",updateLinks);
+    monthlyBtn.addEventListener("click",()=>{
+      monthlyBtn.dataset.selected = monthlyBtn.dataset.selected === "true" ? "false" : "true";
+      monthlyBtn.style.background = monthlyBtn.dataset.selected === "true" ? "#ffe680" : "#ffcc00";
+      updateLinks();
+    });
+  </script>
 </body>
 </html>
