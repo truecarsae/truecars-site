@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +20,7 @@
       --bg-shift:0px;
       --danger:#ff3333;
       --muted:#bbb;
+      --accent:#ffcc00;
     }
 
     /* ===== Header ===== */
@@ -42,6 +43,18 @@
     }
     header.scrolled #main-logo{filter:drop-shadow(0 0 4px rgba(0,0,0,.2));}
     #header-spacer{height:var(--header-height);transition:height .35s ease;}
+
+    /* Language switcher */
+    #lang-switch{
+      position:absolute; right:16px; top:50%; transform:translateY(-50%);
+      display:flex; align-items:center; gap:8px; user-select:none;
+    }
+    .lang-btn{
+      background:none; border:none; color:#aaa; font-weight:700; font-size:14px;
+      cursor:pointer; padding:4px 6px; -webkit-tap-highlight-color: transparent;
+    }
+    .lang-btn.active{ color:var(--accent); }
+    #lang-switch .sep{ color:#888; }
 
     /* ===== Hero (parallax) ===== */
     .hero{
@@ -100,7 +113,7 @@
     .modal.open .modal-content{animation:modalAppear .35s forwards;}
     .modal.closing .modal-content{animation:modalDisappear .25s forwards;}
     @keyframes modalAppear{to{transform:scale(1);opacity:1;}}
-    @keyframes modalDisappear{from{transform:scale(1);opacity:1;}to{transform:scale(0.96);opacity:0;}}
+    @keyframes modalDisappear{from{transform:scale(1);opacity:1);}to{transform:scale(0.96);opacity:0;}}
 
     .close{color:#fff;position:absolute;top:10px;right:20px;font-size:28px;cursor:pointer;transition:0.2s;z-index:3001;-webkit-tap-highlight-color: transparent;}
     .close:hover{color:#ffcc00;}
@@ -113,7 +126,7 @@
     .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;}
     @keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
 
-    /* Arrows */
+    /* Arrows (no circles) */
     .prev,.next{
       cursor:pointer;position:absolute;top:50%;transform:translateY(-50%) scale(1);
       font-size:42px;color:white;background:none;border:none;opacity:.8;
@@ -127,14 +140,16 @@
     .rent-tabs{display:flex;justify-content:center;gap:8px;margin:8px 0 14px;}
     .rent-tab{padding:8px 14px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;cursor:pointer;transition:.2s;}
     .rent-tab.active{background:#ffcc00;color:#222;border-color:#ffcc00;font-weight:700;}
-    .rent-fields{display:none;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:10px;}
+
+    .rent-fields{display:none;flex-direction:column;align-items:center;margin-bottom:10px;}
     .rent-fields.active{display:flex;}
+    .rent-fields label{margin-bottom:6px;font-weight:700;color:#ddd;}
+    .rent-fields .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
     .rent-fields input[type="date"], .rent-fields input[type="number"]{
       padding:8px 10px;border-radius:6px;border:1px solid #555;outline:none;background:#fff;color:#000;min-width:160px;
       transition:border-color .15s ease;
     }
     .rent-fields input.invalid{border:2px solid var(--danger);}
-    .calc-note{color:var(--muted);font-size:.9rem;margin-bottom:6px;}
 
     .cost-box{display:none;background:#1f1f1f;border:1px dashed #444;border-radius:8px;padding:10px 12px;margin:8px auto 12px;max-width:480px;text-align:left;}
     .cost-line{display:flex;justify-content:space-between;margin:2px 0;}
@@ -153,16 +168,22 @@
   <!-- Header -->
   <header id="top-header">
     <img id="main-logo" src="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/Truecars.ae.png?raw=true" alt="Truecars Logo">
+    <!-- Language switcher -->
+    <div id="lang-switch" role="group" aria-label="Language switch">
+      <button class="lang-btn active" data-lang="en" id="btnEN">EN</button>
+      <span class="sep">|</span>
+      <button class="lang-btn" data-lang="ru" id="btnRU">RU</button>
+    </div>
   </header>
   <div id="header-spacer"></div>
 
   <!-- Hero -->
   <section class="hero">
-    <h1>FULL INSURANCE INCLUDED</h1>
-    <h2>Low mileage. High trims. Best experience.</h2>
-    <p>We are honest car rental in Dubai without deposit</p>
-    <h2>DELIVERY - FREE!</h2>
-    <p>All around Dubai including airports</p>
+    <h1 data-i18n="heroH1">FULL INSURANCE INCLUDED</h1>
+    <h2 data-i18n="heroH2a">New cars. Top trims. The most comfortable experience.</h2>
+    <p data-i18n="heroP1">We are honest car rental in Dubai with no deposit</p>
+    <h2 data-i18n="heroH2b">DELIVERY — FREE!</h2>
+    <p data-i18n="heroP2">Across all Dubai, including airports</p>
     <div class="cta">
       <a href="https://wa.me/971506402718" target="_blank" rel="noopener">WhatsApp</a>
       <a href="https://t.me/+971506402718" target="_blank" rel="noopener">Telegram</a>
@@ -172,37 +193,37 @@
 
   <!-- Cars -->
   <section class="cars">
-    <h2>Our Cars</h2>
+    <h2 data-i18n="carsTitle">Our Cars</h2>
     <div class="car-grid">
       <div class="car-card">
         <img loading="lazy" decoding="async" src="https://dhihk6wcjzylk.cloudfront.net/carprices/media/catalog/689b185e8aaa1Hyundai_Sonata_Front.webp" alt="Hyundai Sonata 2024">
         <h3>Hyundai Sonata 2024</h3>
-        <p>220 AED / day | 4,300 AED / month</p>
+        <p class="price" data-en="220 AED / day | 4,300 AED / month" data-ru="220 AED / день | 4,300 AED / месяц">220 AED / day | 4,300 AED / month</p>
       </div>
       <div class="car-card">
         <img loading="lazy" decoding="async" src="https://www.hyundai.com/content/dam/hyundai/wallan/en/data/vehicle-thumbnail/product/azera-2024/small/azera-gn7-3.png" alt="Hyundai Azera 2024">
         <h3>Hyundai Azera 2024</h3>
-        <p>310 AED / day | 6,200 AED / month</p>
+        <p class="price" data-en="310 AED / day | 6,200 AED / month" data-ru="310 AED / день | 6,200 AED / месяц">310 AED / day | 6,200 AED / month</p>
       </div>
       <div class="car-card">
         <img loading="lazy" decoding="async" src="https://images.dealer.com/ddc/vehicles/2025/Kia/K5/Sedan/perspective/front-left/2025_20.png" alt="Kia K5 2024">
         <h3>Kia K5 2024</h3>
-        <p>200 AED / day | 4,100 AED / month</p>
+        <p class="price" data-en="200 AED / day | 4,100 AED / month" data-ru="200 AED / день | 4,100 AED / месяц">200 AED / day | 4,100 AED / month</p>
       </div>
       <div class="car-card">
         <img loading="lazy" decoding="async" src="https://cdn.cetas.com.tr/Delivery/Public/Image/-1x-1/308_an2n9mye3c_aids7ir3p2.png" alt="Peugeot 308 2023">
         <h3>Peugeot 308 2023</h3>
-        <p>170 AED / day | 2,700 AED / month</p>
+        <p class="price" data-en="170 AED / day | 2,700 AED / month" data-ru="170 AED / день | 2,700 AED / месяц">170 AED / day | 2,700 AED / month</p>
       </div>
       <div class="car-card">
         <img loading="lazy" decoding="async" src="https://www.airportchevy.com/blogs/3573/wp-content/uploads/2023/11/2024-chevy-trax.png" alt="Chevrolet Trax 2023">
         <h3>Chevrolet Trax 2023</h3>
-        <p>170 AED / day | 2'700 AED / month</p>
+        <p class="price" data-en="170 AED / day | 2'700 AED / month" data-ru="170 AED / день | 2'700 AED / месяц">170 AED / day | 2'700 AED / month</p>
       </div>
       <div class="car-card">
         <img loading="lazy" decoding="async" src="https://media.dealeralchemist.com/jellies/Hyundai/Palisade/C475975_WC9_Front.png?auto=compress%2Cformat" alt="Hyundai Palisade 2025">
         <h3>Hyundai Palisade 2025</h3>
-        <p>700 AED / day | 12'000 AED / month</p>
+        <p class="price" data-en="700 AED / day | 12'000 AED / month" data-ru="700 AED / день | 12'000 AED / месяц">700 AED / day | 12'000 AED / month</p>
       </div>
     </div>
   </section>
@@ -214,7 +235,7 @@
       <a href="https://t.me/+971506402718" target="_blank" rel="noopener">Telegram</a>
       <a href="https://instagram.com/truecars.ae" target="_blank" rel="noopener">Instagram</a>
     </div>
-    <p>&copy; 2025 Truecars.ae - All rights reserved.</p>
+    <p>&copy; 2025 Truecars.ae - <span data-i18n="rights">All rights reserved.</span></p>
     <p>TRUECARS MIDDLE EAST CAR RENTAL L.L.C.</p>
   </footer>
 
@@ -233,34 +254,38 @@
 
       <!-- Rent tabs -->
       <div class="rent-tabs">
-        <button class="rent-tab active" data-mode="daily" id="tabDaily">Daily</button>
-        <button class="rent-tab" data-mode="monthly" id="tabMonthly">Monthly</button>
+        <button class="rent-tab active" data-mode="daily" id="tabDaily" data-i18n="tabDaily">Daily</button>
+        <button class="rent-tab" data-mode="monthly" id="tabMonthly" data-i18n="tabMonthly">Monthly</button>
       </div>
 
       <!-- DAILY -->
       <div class="rent-fields active" id="fieldsDaily">
-        <span class="calc-note">Select start and end dates</span>
-        <input type="date" id="dailyStart">
-        <input type="date" id="dailyEnd">
+        <label data-i18n="noteDaily">Select rental dates</label>
+        <div class="row">
+          <input type="date" id="dailyStart">
+          <input type="date" id="dailyEnd">
+        </div>
       </div>
 
       <!-- MONTHLY -->
       <div class="rent-fields" id="fieldsMonthly">
-        <span class="calc-note">Select start date and months</span>
-        <input type="date" id="monthlyStart">
-        <input type="number" id="monthlyMonths" min="1" max="24" placeholder="Months">
+        <label data-i18n="noteMonthly">Select start date and months</label>
+        <div class="row">
+          <input type="date" id="monthlyStart">
+          <input type="number" id="monthlyMonths" min="1" max="24" placeholder="Months" data-placeholder-en="Months" data-placeholder-ru="Месяцы">
+        </div>
       </div>
 
       <!-- Cost -->
       <div class="cost-box" id="costBox">
-        <div class="cost-line"><span>Base price:</span> <strong id="costBase">—</strong></div>
-        <div class="cost-line"><span>VAT (5%):</span> <strong id="costVat">—</strong></div>
-        <div class="cost-line cost-total"><span>Total:</span> <strong id="costTotal">—</strong></div>
+        <div class="cost-line"><span data-i18n="labelBase">Base price:</span> <strong id="costBase">—</strong></div>
+        <div class="cost-line"><span data-i18n="labelVat">VAT (5%):</span> <strong id="costVat">—</strong></div>
+        <div class="cost-line cost-total"><span data-i18n="labelTotal">Total:</span> <strong id="costTotal">—</strong></div>
         <div class="cost-duration" id="costDuration"></div>
         <div class="cost-end" id="costEnd"></div>
       </div>
 
-      <div class="request-label">Request:</div>
+      <div class="request-label" data-i18n="request">Request:</div>
       <div class="contact-row">
         <a id="whatsappLink" target="_blank" rel="noopener">WhatsApp</a>
         <a id="telegramLink" target="_blank" rel="noopener">Telegram</a>
@@ -292,7 +317,6 @@
         .then(r => { clearTimeout(t); return r; })
         .catch(() => { clearTimeout(t); return { ok:false }; });
     }
-
     // date helpers
     function toYMD(d){
       const yyyy = d.getFullYear();
@@ -313,7 +337,6 @@
       if (isNaN(d)) return null;
       const day = d.getDate();
       d.setMonth(d.getMonth() + months);
-      // корректировка для конца месяца
       while (d.getDate() < day){ d.setDate(d.getDate()-1); }
       return d;
     }
@@ -359,7 +382,110 @@
     let rentMode = 'daily'; // 'daily' | 'monthly'
     let currentDailyPrice = 0, currentMonthlyPrice = 0; // parsed from card
 
-    // set min dates = today
+    /* ===== Language handling ===== */
+    const translations = {
+      en: {
+        heroH1: "FULL INSURANCE INCLUDED",
+        heroH2a: "New cars. Top trims. The most comfortable experience.",
+        heroP1: "We are honest car rental in Dubai with no deposit",
+        heroH2b: "DELIVERY — FREE!",
+        heroP2: "Across all Dubai, including airports",
+        carsTitle: "Our Cars",
+        rights: "All rights reserved.",
+        tabDaily: "Daily",
+        tabMonthly: "Monthly",
+        noteDaily: "Select rental dates",
+        noteMonthly: "Select start date and months",
+        labelBase: "Base price:",
+        labelVat: "VAT (5%):",
+        labelTotal: "Total:",
+        request: "Request:",
+        durationDays: d => `Duration: ${d} day${d>1?'s':''}`,
+        durationMonths: m => `Duration: ${m} month${m>1?'s':''}`,
+        endDate: date => `End date: ${date}`,
+        greeting: "Hi, TrueCars team!",
+        askAvail: "Is the car available?",
+        msgDaily: (model, d, s, e) => `Hi, TrueCars team! I would like to rent ${model} for ${d} day${d>1?'s':''} (from ${s} to ${e}). Is the car available?`,
+        msgMonthly: (model, m, s) => `Hi, TrueCars team! I would like to rent ${model} for ${m} month${m>1?'s':''} (starting from ${s}). Is the car available?`
+      },
+      ru: {
+        heroH1: "ПОЛНАЯ СТРАХОВКА ВКЛЮЧЕНА",
+        heroH2a: "Новые автомобили. Богатые комплектации. Максимальный комфорт.",
+        heroP1: "Честный прокат авто в Дубае без залога",
+        heroH2b: "ДОСТАВКА — БЕСПЛАТНО!",
+        heroP2: "По всему Дубаю, включая аэропорты",
+        carsTitle: "Наши автомобили",
+        rights: "Все права защищены.",
+        tabDaily: "День",
+        tabMonthly: "Месяц",
+        noteDaily: "Выберите даты аренды",
+        noteMonthly: "Выберите дату начала и срок аренды (в месяцах)",
+        labelBase: "Базовая стоимость:",
+        labelVat: "НДС (5%):",
+        labelTotal: "Итого:",
+        request: "Запрос:",
+        durationDays: d => `Аренда на ${d} дн.`,
+        durationMonths: m => `Аренда на ${m} мес.`,
+        endDate: date => `Окончание аренды: ${date}`,
+        greeting: "Здравствуйте, команда TrueCars!",
+        askAvail: "Подскажите, пожалуйста, доступен ли автомобиль?",
+        msgDaily: (model, d, s, e) => `Здравствуйте, команда TrueCars! Хочу арендовать ${model} на ${d} дн. (с ${s} по ${e}). Подскажите, пожалуйста, доступен ли автомобиль?`,
+        msgMonthly: (model, m, s) => `Здравствуйте, команда TrueCars! Хочу арендовать ${model} на ${m} мес. (начиная с ${s}). Подскажите, пожалуйста, доступен ли автомобиль?`
+      }
+    };
+
+    const i18nSelectors = [
+      "heroH1","heroH2a","heroP1","heroH2b","heroP2",
+      "carsTitle","rights","tabDaily","tabMonthly","noteDaily","noteMonthly",
+      "labelBase","labelVat","labelTotal","request"
+    ];
+
+    const btnEN = document.getElementById('btnEN');
+    const btnRU = document.getElementById('btnRU');
+    const rootHtml = document.documentElement;
+
+    function applyTranslations(lang){
+      // text nodes
+      i18nSelectors.forEach(key=>{
+        document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el=>{
+          el.textContent = translations[lang][key];
+        });
+      });
+      // placeholder for months input
+      monthlyMonths.placeholder = monthlyMonths.getAttribute(`data-placeholder-${lang}`) || monthlyMonths.placeholder;
+
+      // Prices on cards (day/month ↔ день/месяц)
+      document.querySelectorAll('.price').forEach(p=>{
+        const txt = p.getAttribute(`data-${lang}`);
+        if (txt) p.textContent = txt;
+      });
+
+      // highlight active button
+      btnEN.classList.toggle('active', lang==='en');
+      btnRU.classList.toggle('active', lang==='ru');
+
+      // set html attrs
+      rootHtml.setAttribute('lang', lang);
+      rootHtml.setAttribute('data-lang', lang);
+
+      // recalc & links
+      recalc();
+      updateLinks();
+    }
+
+    function setLang(lang){
+      localStorage.setItem('lang', lang);
+      applyTranslations(lang);
+    }
+
+    // init language
+    const savedLang = localStorage.getItem('lang') || 'en';
+    setLang(savedLang);
+
+    btnEN.addEventListener('click', (e)=>{ e.stopPropagation(); setLang('en'); });
+    btnRU.addEventListener('click', (e)=>{ e.stopPropagation(); setLang('ru'); });
+
+    /* ===== Dates min (no past) ===== */
     function setMinDates(){
       const today = toYMD(new Date());
       [dailyStart, dailyEnd, monthlyStart].forEach(inp => { if(inp) inp.min = today; });
@@ -374,7 +500,7 @@
       inp.addEventListener('change', handler);
     });
 
-    // tabs
+    /* ===== Tabs & Cost ===== */
     function setMode(mode){
       rentMode = mode;
       tabDaily.classList.toggle('active', mode==='daily');
@@ -407,17 +533,17 @@
       costEndEl.textContent = '';
     }
 
-    // recalc in real-time
     function recalc(){
       hideCost();
+      const lang = rootHtml.getAttribute('data-lang') || 'en';
       if (rentMode==='daily'){
-        // keep end >= start
         if (dailyStart.value) dailyEnd.min = dailyStart.value;
         const s = dailyStart.value, e = dailyEnd.value;
         const d = daysInclusive(s,e);
         if (d>0 && currentDailyPrice>0){
           const base = d * currentDailyPrice;
-          showCost(base, `Duration: ${d} day${d>1?'s':''}`);
+          const durationText = translations[lang].durationDays(d);
+          showCost(base, durationText, "");
         }
       } else {
         const s = monthlyStart.value;
@@ -425,8 +551,10 @@
         if (s && m>0 && currentMonthlyPrice>0){
           const base = m * currentMonthlyPrice;
           const end = addMonths(s, m);
-          const endText = end ? `End date: ${fmt(toYMD(end))}` : '';
-          showCost(base, `Duration: ${m} month${m>1?'s':''}`, endText);
+          const endFmt = end ? fmt(toYMD(end)) : "";
+          const durationText = translations[lang].durationMonths(m);
+          const endText = endFmt ? translations[lang].endDate(endFmt) : "";
+          showCost(base, durationText, endText);
         }
       }
     }
@@ -435,7 +563,6 @@
     monthlyStart.addEventListener('change', recalc);
     monthlyMonths.addEventListener('input', recalc);
 
-    // validation
     function validate(){
       let ok = true;
       [dailyStart,dailyEnd,monthlyStart,monthlyMonths].forEach(i=> i && i.classList.remove('invalid'));
@@ -454,22 +581,32 @@
       return ok;
     }
 
-    // links (English + greeting + availability)
+    // Localized messages for WhatsApp/Telegram
     function updateLinks(){
-      let period = '';
+      const lang = rootHtml.getAttribute('data-lang') || 'en';
+      let text = "";
       if (rentMode==='daily'){
         const s = fmt(dailyStart.value);
         const e = fmt(dailyEnd.value);
         const d = daysInclusive(dailyStart.value, dailyEnd.value);
-        if (s && e && d>0) period = `for ${d} day${d>1?'s':''} (from ${s} to ${e})`;
+        if (s && e && d>0){
+          text = translations[lang].msgDaily(selectedCar, d, s, e);
+        }
       } else {
         const s = fmt(monthlyStart.value);
         const m = parseInt(monthlyMonths.value,10);
-        if (s && m>0) period = `for ${m} month${m>1?'s':''} (starting from ${s})`;
+        if (s && m>0){
+          text = translations[lang].msgMonthly(selectedCar, m, s);
+        }
       }
-      const text = encodeURIComponent(`Hi, TrueCars team! I would like to rent ${selectedCar} ${period}. Is the car available?`);
-      whatsappLink.href = `https://wa.me/971506402718?text=${text}`;
-      telegramLink.href = `https://t.me/+971506402718?text=${text}`;
+      if (!text){
+        const greet = translations[lang].greeting;
+        const ask = translations[lang].askAvail;
+        text = `${greet} ${ask}`;
+      }
+      const encoded = encodeURIComponent(text);
+      whatsappLink.href = `https://wa.me/971506402718?text=${encoded}`;
+      telegramLink.href = `https://t.me/+971506402718?text=${encoded}`;
     }
 
     function handleSend(e){
@@ -507,7 +644,7 @@
         setMode('daily');
         dailyStart.value = ''; dailyEnd.value = '';
         monthlyStart.value = ''; monthlyMonths.value = '';
-        setMinDates(); // refresh mins (today)
+        setMinDates();
         hideCost();
         updateLinks();
 
@@ -606,6 +743,13 @@
     modalImg.addEventListener("touchend",()=>{ if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
       else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
       startX=0; endX=0; });
+
+    /* ===== Initialize prices to saved language on load ===== */
+    // (чтобы при первом открытии сразу стояли нужные "день / месяц")
+    window.addEventListener('load', ()=>{
+      const lang = localStorage.getItem('lang') || 'en';
+      applyTranslations(lang);
+    });
   </script>
 </body>
 </html>
