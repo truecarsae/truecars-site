@@ -158,7 +158,7 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>TRUE CARS ONLY</h1>
+    <h1>FULL INSURANCE INCLUDED</h1>
     <h2>Low mileage. High trims. Best experience.</h2>
     <p>We are honest car rental in Dubai without deposit</p>
     <h2>DELIVERY - FREE!</h2>
@@ -300,19 +300,22 @@
 
         // Проверяем до 20 файлов HEAD-запросами (батчами по 5 для отзывчивости)
         const MAX = 10, BATCH = 3;
-        let found = [];
-        for (let start = 1; start <= MAX; start += BATCH){
-          const batch = [];
-          for (let i = start; i < start + BATCH && i <= MAX; i++){
-            const url = `${base}${i}.png`;
-            batch.push(headWithTimeout(url).then(res => res.ok ? url : null));
-          }
-          const part = await Promise.all(batch);
-          found = found.concat(part.filter(Boolean));
-          // небольшая пауза между батчами, чтобы не забивать сеть
-          await new Promise(r=>setTimeout(r, 60));
-        }
-        currentImages = found;
+// Загружаем все PNG-файлы из папки GitHub автоматически
+let found = [];
+try {
+  const apiUrl = `https://api.github.com/repos/truecarsae/truecars-site/contents/cars/${slug}?ref=truecarsae-images`;
+  const response = await fetch(apiUrl);
+  if (response.ok) {
+    const files = await response.json();
+    found = files
+      .filter(f => f.name.toLowerCase().endsWith('.png'))
+      .map(f => f.download_url);
+  }
+} catch(e) {
+  console.error('Ошибка загрузки списка файлов:', e);
+}
+currentImages = found;
+
 
         // Fallback: если в GitHub нет фото — берём картинку из карточки и показываем сразу (без подвисания)
         if (currentImages.length === 0) {
