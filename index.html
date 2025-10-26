@@ -110,6 +110,27 @@
     .contact-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
     .contact-links a{background:#fff;color:#000;padding:10px 20px;border-radius:6px;font-weight:600;transition:0.3s;}
     .contact-links a:hover{background:#ffcc00;color:#222;}
+    /* гарантируем кликабельность крестика поверх всего */
+.close{
+  z-index: 3001;           /* выше всего в модалке */
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* стрелки тоже поверх изображения/лоадера */
+.prev, .next{ z-index: 3000; }
+
+/* лоадер ниже крестика и стрелок, но поверх изображения */
+.loader{ z-index: 2990; }
+
+/* чтобы клики по изображению не мешали закрытию по фону */
+.modal{ display:none; position:fixed; z-index:2000; inset:0; }
+.modal-content{ position:relative; margin:auto; }
+
   </style>
 </head>
 <body>
@@ -123,7 +144,7 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>TRUE CARS ONLY</h1>
+    <h1>FULL INSURANCE INCLUDED</h1>
     <h2>Low mileage. High trims. Best experience.</h2>
     <p>We are honest car rental in Dubai without deposit</p>
     <h2>DELIVERY - FREE!</h2>
@@ -209,110 +230,117 @@
     </div>
   </div>
 
-  <script>
-    /* ===== Header: уменьшение и клик-наверх ===== */
-    const header = document.getElementById('top-header');
-    const spacer = document.getElementById('header-spacer');
-    header.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+<script>
+  /* ===== Header: уменьшение и клик-наверх ===== */
+  const header = document.getElementById('top-header');
+  const spacer = document.getElementById('header-spacer');
+  header.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    function syncSpacer(){ spacer.style.height = header.offsetHeight + 'px'; }
-    function onScroll(){
-      const scrolled = window.scrollY > 60;
-      header.classList.toggle('scrolled', scrolled);
-      syncSpacer();
-      // Параллакс: чем больше прокрутка, тем сильнее смещение фона вверх
-      const y = Math.min(window.scrollY * 0.35, 250); // ограничим смещение
-      document.documentElement.style.setProperty('--bg-shift', `-${y}px`);
-    }
-    window.addEventListener('scroll', onScroll);
-    window.addEventListener('resize', syncSpacer);
-    window.addEventListener('load', () => { syncSpacer(); onScroll(); });
+  function syncSpacer(){ spacer.style.height = header.offsetHeight + 'px'; }
+  function onScroll(){
+    const scrolled = window.scrollY > 60;
+    header.classList.toggle('scrolled', scrolled);
+    syncSpacer();
+    const y = Math.min(window.scrollY * 0.35, 250);
+    document.documentElement.style.setProperty('--bg-shift', `-${y}px`);
+  }
+  window.addEventListener('scroll', onScroll);
+  window.addEventListener('resize', syncSpacer);
+  window.addEventListener('load', () => { syncSpacer(); onScroll(); });
 
-    /* ===== Modal & Gallery ===== */
-    const modal = document.getElementById("carModal"),
-          modalImg = document.getElementById("modalImage"),
-          carTitle = document.getElementById("carTitle"),
-          closeBtn = document.querySelector(".close"),
-          prevBtn = document.querySelector(".prev"),
-          nextBtn = document.querySelector(".next"),
-          loader = document.querySelector(".loader"),
-          startDateInput = document.getElementById("startDate"),
-          endDateInput = document.getElementById("endDate"),
-          monthlyBtn = document.getElementById("monthlyBtn"),
-          whatsappLink = document.getElementById("whatsappLink"),
-          telegramLink = document.getElementById("telegramLink");
+  /* ===== Modal & Gallery ===== */
+  const modal = document.getElementById("carModal"),
+        modalImg = document.getElementById("modalImage"),
+        carTitle = document.getElementById("carTitle"),
+        closeBtn = document.querySelector(".close"),
+        prevBtn = document.querySelector(".prev"),
+        nextBtn = document.querySelector(".next"),
+        loader = document.querySelector(".loader"),
+        startDateInput = document.getElementById("startDate"),
+        endDateInput = document.getElementById("endDate"),
+        monthlyBtn = document.getElementById("monthlyBtn"),
+        whatsappLink = document.getElementById("whatsappLink"),
+        telegramLink = document.getElementById("telegramLink");
 
-    let currentImages = [], currentIndex = 0, selectedCar = "";
+  let currentImages = [], currentIndex = 0, selectedCar = "";
 
-    // Открытие модалки по клику на карточку
-    document.querySelectorAll(".car-card").forEach(card=>{
-      card.addEventListener("click",()=>{
-        selectedCar = card.querySelector("h3").textContent;
-        carTitle.textContent = selectedCar;
+  // Открытие модалки по клику на карточку
+  document.querySelectorAll(".car-card").forEach(card=>{
+    card.addEventListener("click",(e)=>{
+      e.stopPropagation(); // чтобы "клик-вне" не сработал сразу
+      selectedCar = card.querySelector("h3").textContent;
+      carTitle.textContent = selectedCar;
 
-        // slug по второй части имени ("Hyundai Sonata 2024" -> "sonata")
-        const slug = selectedCar.toLowerCase().split(" ")[1];
-        const base = "https://github.com/truecarsae/truecars-site/blob/truecarsae-images/cars/";
-        currentImages = Array.from({length:5}, (_,i)=> `${base}${slug}/${i+1}.png?raw=true`);
+      // slug по второй части имени ("Hyundai Sonata 2024" -> "sonata")
+      const slug = (selectedCar.toLowerCase().split(" ")[1] || "").replace(/[^a-z0-9\-]/g,'');
+      const base = "https://github.com/truecarsae/truecars-site/blob/truecarsae-images/cars/";
+      currentImages = Array.from({length:5}, (_,i)=> `${base}${slug}/${i+1}.png?raw=true`);
 
-        currentIndex = 0;
-        showImage();
-        modal.style.display = "block";
-        updateLinks(); // сгенерируем стартовые ссылки
-      });
-    });
-
-    function showImage(){
-      loader.style.display = "block";
-      modalImg.classList.remove("loaded");
-      const img = new Image();
-      img.src = currentImages[currentIndex];
-      img.onload = () => {
-        modalImg.src = img.src;
-        modalImg.classList.add("loaded");
-        loader.style.display = "none";
-      };
-    }
-
-    prevBtn.addEventListener("click",()=>{ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
-    nextBtn.addEventListener("click",()=>{ currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
-    closeBtn.addEventListener("click",()=> modal.style.display = "none");
-    window.addEventListener("click",(e)=>{ if(e.target===modal) modal.style.display = "none"; });
-
-    // Свайп на мобильных
-    let startX=0,endX=0;
-    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;});
-    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;});
-    modalImg.addEventListener("touchend",()=>{
-      if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
-      else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
-      startX=0; endX=0;
-    });
-
-    // Генерация ссылок WhatsApp / Telegram
-    function updateLinks(){
-      const start = startDateInput.value;
-      const end = endDateInput.value;
-      let period = "";
-
-      if (monthlyBtn.dataset.selected === "true") {
-        period = "на помесячной основе";
-      } else if (start && end) {
-        period = `с ${start} по ${end}`;
-      }
-
-      const text = encodeURIComponent(`Здравствуйте! Я хочу арендовать ${selectedCar} ${period}. Подскажите, пожалуйста, доступна ли машина?`);
-      whatsappLink.href = `https://wa.me/971506402718?text=${text}`;
-      telegramLink.href = `https://t.me/+971506402718?text=${text}`; /* оставляю ваши ссылки как просили */
-    }
-
-    startDateInput.addEventListener("change",updateLinks);
-    endDateInput.addEventListener("change",updateLinks);
-    monthlyBtn.addEventListener("click",()=>{
-      monthlyBtn.dataset.selected = monthlyBtn.dataset.selected === "true" ? "false" : "true";
-      monthlyBtn.style.background = monthlyBtn.dataset.selected === "true" ? "#ffe680" : "#ffcc00";
+      currentIndex = 0;
+      showImage();
+      modal.style.display = "block";
       updateLinks();
     });
-  </script>
+  });
+
+  function showImage(){
+    loader.style.display = "block";
+    modalImg.classList.remove("loaded");
+    const img = new Image();
+    img.src = currentImages[currentIndex];
+    img.onload = () => {
+      modalImg.src = img.src;
+      modalImg.classList.add("loaded");
+      loader.style.display = "none";
+    };
+  }
+
+  prevBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
+  nextBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
+
+  // --- Закрытие: крестик всегда работает и перекрывает всё
+  function closeModal(){ modal.style.display = "none"; }
+  closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
+
+  // --- Клик по фону (правильная проверка: клик именно по оверлею)
+  modal.addEventListener("click",(e)=>{
+    if (e.target === modal) closeModal();
+  });
+
+  // --- Свайпы на мобильных по изображению
+  let startX=0,endX=0;
+  modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;});
+  modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;});
+  modalImg.addEventListener("touchend",()=>{
+    if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
+    else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
+    startX=0; endX=0;
+  });
+
+  /* ===== Ссылки WhatsApp / Telegram ===== */
+  function updateLinks(){
+    const start = startDateInput.value;
+    const end = endDateInput.value;
+    let period = "";
+
+    if (monthlyBtn.dataset.selected === "true") {
+      period = "на помесячной основе";
+    } else if (start && end) {
+      period = `с ${start} по ${end}`;
+    }
+
+    const text = encodeURIComponent(`Здравствуйте! Я хочу арендовать ${selectedCar} ${period}. Подскажите, пожалуйста, доступна ли машина?`);
+    whatsappLink.href = `https://wa.me/971506402718?text=${text}`;
+    telegramLink.href = `https://t.me/+971506402718?text=${text}`;
+  }
+
+  startDateInput.addEventListener("change",updateLinks);
+  endDateInput.addEventListener("change",updateLinks);
+  monthlyBtn.addEventListener("click",()=>{
+    monthlyBtn.dataset.selected = monthlyBtn.dataset.selected === "true" ? "false" : "true";
+    monthlyBtn.style.background = monthlyBtn.dataset.selected === "true" ? "#ffe680" : "#ffcc00";
+    updateLinks();
+  });
+</script>
 </body>
 </html>
