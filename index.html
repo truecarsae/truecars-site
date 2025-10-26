@@ -7,27 +7,77 @@
   <style>
     /* ===== Reset & Base ===== */
     * { margin:0; padding:0; box-sizing:border-box; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
-    body { background-color:#3a3a3a; color:#fff; line-height:1.6; }
+    html { scroll-behavior: smooth; }
+    body { background-color:#3a3a3a; color:#fff; line-height:1.6; overflow-x:hidden; }
 
     a { text-decoration:none; color:inherit; }
 
-    /* ===== Container ===== */
-    .container { max-width: 1200px; margin:0 auto; padding:0 20px; }
+    /* ===== Parallax Background ===== */
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 420px;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.45), #3a3a3a 75%),
+        url("https://github.com/truecarsae/truecars-site/blob/truecarsae-images/dubai-skyline.png?raw=true") top center / cover no-repeat fixed;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      text-align: center;
+      padding-bottom: 50px;
+      padding-top: 80px; /* подняли текст ближе вверх */
+    }
 
-    /* ===== Header ===== */
-    header { padding:40px 0; text-align:center; font-size:3rem; letter-spacing:1px; }
-    
-    /* ===== Hero ===== */
-    .hero { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:100px 20px; }
-    .hero h1 { font-size:4rem; font-weight:300; margin-bottom:20px; letter-spacing:2px; }
-    .hero p { font-size:1.5rem; margin-bottom:40px; color:#ccc; }
-    .hero .cta { display:flex; gap:20px; flex-wrap:wrap; }
+    /* ===== Header & Logo ===== */
+    header {
+      text-align:center;
+      padding-top:20px;
+      position: relative;
+      z-index: 1000;
+    }
+
+    #main-logo {
+      width: 300px;
+      transition: all 0.45s ease;
+    }
+
+    /* ===== Sticky (transformed) state ===== */
+    .logo-fixed {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 110px;
+      transform: translateX(0) !important;
+    }
+
+    @media (max-width: 768px) {
+      .logo-fixed { width: 80px; top: 18px; left: 18px; }
+    }
+
+    /* ===== Hero Text ===== */
+    .hero h1 {
+      font-size:3rem;
+      font-weight:300;
+      letter-spacing:2px;
+      margin-bottom:12px;
+    }
+    .hero h2 {
+      font-size:1.8rem;
+      margin-bottom:12px;
+    }
+    .hero p {
+      font-size:1.2rem;
+      margin-bottom:25px;
+      color:#ccc;
+    }
+    .cta { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
     .cta a { background:#fff; color:#1c1c1c; padding:15px 25px; border-radius:5px; font-weight:600; transition:0.3s; }
     .cta a:hover { background:#ffcc00; color:#818181; }
 
     /* ===== Cars Section ===== */
-    .cars { padding:60px 0; }
-    .cars h2 { text-align:center; font-size:2.5rem; margin-bottom:40px; letter-spacing:1px; }
+    .cars { padding:60px 20px; max-width:1200px; margin:0 auto; }
+    .cars h2 { text-align:center; font-size:2.5rem; margin-bottom:40px; }
     .car-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:30px; }
     .car-card { background:#2a2a2a; border-radius:10px; padding:20px; text-align:center; transition:0.3s; }
     .car-card:hover { background:#333; }
@@ -36,17 +86,17 @@
     .car-card p { font-size:1rem; color:#ccc; }
 
     /* ===== Footer ===== */
-    footer { text-align:center; padding:40px 20px; background:#111; color:#aaa; }
-    footer .contacts { display:flex; justify-content:center; gap:30px; margin-bottom:20px; }
-    footer .contacts a { display:flex; align-items:center; gap:8px; font-weight:500; }
-    footer p { font-size:0.9rem; }
+    footer { text-align:center; padding:40px 20px; background:#111; color:#aaa; margin-top:40px; }
+    footer .contacts { display:flex; justify-content:center; gap:30px; margin-bottom:20px; flex-wrap:wrap; }
+    footer .contacts a { font-weight:500; }
   </style>
 </head>
 <body>
 
   <!-- Header -->
-  <header> <img src="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/Truecars.ae.png?raw=true" alt="logo" width="300">
-</header>
+  <header id="top-header">
+    <img id="main-logo" src="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/Truecars.ae.png?raw=true" alt="logo">
+  </header>
 
   <!-- Hero Section -->
   <section class="hero">
@@ -63,7 +113,7 @@
   </section>
 
   <!-- Cars Section -->
-  <section class="cars container">
+  <section class="cars">
     <h2>Our Cars</h2>
     <div class="car-grid">
       <div class="car-card">
@@ -110,6 +160,24 @@
     <p>TRUECARS MIDDLE EAST CAR RENTAL L.L.C.</p>
   </footer>
 
+  <!-- Sticky Transform Script -->
+  <script>
+    const logo = document.getElementById('main-logo');
+    const hero = document.querySelector('.hero');
+    const triggerHeight = hero.offsetHeight * 0.55;
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > triggerHeight) {
+        logo.classList.add('logo-fixed');
+      } else {
+        logo.classList.remove('logo-fixed');
+      }
+    });
+
+    logo.addEventListener('click', () => {
+      window.scrollTo({ top:0, behavior:'smooth' });
+    });
+  </script>
+
 </body>
 </html>
-
