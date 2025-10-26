@@ -4,10 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>True Cars Only</title>
+  <!-- ускорение установления соединения с GitHub -->
+  <link rel="preconnect" href="https://api.github.com" crossorigin>
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
     html{scroll-behavior:smooth;}
     body{background-color:#3a3a3a;color:#fff;line-height:1.6;overflow-x:hidden;}
+    body.no-scroll{overflow:hidden;} /* блокируем фон при открытой модалке */
     a{text-decoration:none;color:inherit;}
 
     :root{
@@ -164,9 +168,9 @@
     <h2>DELIVERY - FREE!</h2>
     <p>All around Dubai including airports</p>
     <div class="cta">
-      <a href="https://wa.me/971506402718" target="_blank">WhatsApp</a>
-      <a href="https://t.me/+971506402718" target="_blank">Telegram</a>
-      <a href="https://instagram.com/truecars.ae" target="_blank">Instagram</a>
+      <a href="https://wa.me/971506402718" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://t.me/+971506402718" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://instagram.com/truecars.ae" target="_blank" rel="noopener">Instagram</a>
     </div>
   </section>
 
@@ -175,32 +179,32 @@
     <h2>Our Cars</h2>
     <div class="car-grid">
       <div class="car-card">
-        <img loading="lazy" src="https://dhihk6wcjzylk.cloudfront.net/carprices/media/catalog/689b185e8aaa1Hyundai_Sonata_Front.webp" alt="Hyundai Sonata 2024">
+        <img loading="lazy" decoding="async" src="https://dhihk6wcjzylk.cloudfront.net/carprices/media/catalog/689b185e8aaa1Hyundai_Sonata_Front.webp" alt="Hyundai Sonata 2024">
         <h3>Hyundai Sonata 2024</h3>
         <p>220 AED / day | 4,300 AED / month</p>
       </div>
       <div class="car-card">
-        <img loading="lazy" src="https://www.hyundai.com/content/dam/hyundai/wallan/en/data/vehicle-thumbnail/product/azera-2024/small/azera-gn7-3.png" alt="Hyundai Azera 2024">
+        <img loading="lazy" decoding="async" src="https://www.hyundai.com/content/dam/hyundai/wallan/en/data/vehicle-thumbnail/product/azera-2024/small/azera-gn7-3.png" alt="Hyundai Azera 2024">
         <h3>Hyundai Azera 2024</h3>
         <p>310 AED / day | 6,200 AED / month</p>
       </div>
       <div class="car-card">
-        <img loading="lazy" src="https://images.dealer.com/ddc/vehicles/2025/Kia/K5/Sedan/perspective/front-left/2025_20.png" alt="Kia K5 2024">
+        <img loading="lazy" decoding="async" src="https://images.dealer.com/ddc/vehicles/2025/Kia/K5/Sedan/perspective/front-left/2025_20.png" alt="Kia K5 2024">
         <h3>Kia K5 2024</h3>
         <p>200 AED / day | 4,100 AED / month</p>
       </div>
       <div class="car-card">
-        <img loading="lazy" src="https://cdn.cetas.com.tr/Delivery/Public/Image/-1x-1/308_an2n9mye3c_aids7ir3p2.png" alt="Peugeot 308 2023">
+        <img loading="lazy" decoding="async" src="https://cdn.cetas.com.tr/Delivery/Public/Image/-1x-1/308_an2n9mye3c_aids7ir3p2.png" alt="Peugeot 308 2023">
         <h3>Peugeot 308 2023</h3>
         <p>170 AED / day | 2,700 AED / month</p>
       </div>
       <div class="car-card">
-        <img loading="lazy" src="https://www.airportchevy.com/blogs/3573/wp-content/uploads/2023/11/2024-chevy-trax.png" alt="Chevrolet Trax 2023">
+        <img loading="lazy" decoding="async" src="https://www.airportchevy.com/blogs/3573/wp-content/uploads/2023/11/2024-chevy-trax.png" alt="Chevrolet Trax 2023">
         <h3>Chevrolet Trax 2023</h3>
         <p>170 AED / day | 2'700 AED / month</p>
       </div>
       <div class="car-card">
-        <img loading="lazy" src="https://media.dealeralchemist.com/jellies/Hyundai/Palisade/C475975_WC9_Front.png?auto=compress%2Cformat" alt="Hyundai Palisade 2025">
+        <img loading="lazy" decoding="async" src="https://media.dealeralchemist.com/jellies/Hyundai/Palisade/C475975_WC9_Front.png?auto=compress%2Cformat" alt="Hyundai Palisade 2025">
         <h3>Hyundai Palisade 2025</h3>
         <p>700 AED / day | 12'000 AED / month</p>
       </div>
@@ -210,18 +214,18 @@
   <!-- Footer -->
   <footer>
     <div class="contacts">
-      <a href="https://wa.me/971506402718" target="_blank">WhatsApp</a>
-      <a href="https://t.me/+971506402718" target="_blank">Telegram</a>
-      <a href="https://instagram.com/truecars.ae" target="_blank">Instagram</a>
+      <a href="https://wa.me/971506402718" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://t.me/+971506402718" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://instagram.com/truecars.ae" target="_blank" rel="noopener">Instagram</a>
     </div>
     <p>&copy; 2025 Truecars.ae - All rights reserved.</p>
     <p>TRUECARS MIDDLE EAST CAR RENTAL L.L.C.</p>
   </footer>
 
   <!-- Modal -->
-  <div id="carModal" class="modal">
+  <div id="carModal" class="modal" aria-modal="true" role="dialog">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close" role="button" aria-label="Close">&times;</span>
       <div class="carousel">
         <button class="prev" aria-label="Previous">&#10094;</button>
         <img id="modalImage" src="" alt="Car image">
@@ -237,8 +241,8 @@
           <button id="monthlyBtn">Помесячно</button>
         </div>
         <div class="contact-links">
-          <a id="whatsappLink" target="_blank">WhatsApp</a>
-          <a id="telegramLink" target="_blank">Telegram</a>
+          <a id="whatsappLink" target="_blank" rel="noopener">WhatsApp</a>
+          <a id="telegramLink" target="_blank" rel="noopener">Telegram</a>
         </div>
       </div>
     </div>
@@ -263,8 +267,8 @@
     window.addEventListener('resize', syncSpacer);
     window.addEventListener('load', () => { syncSpacer(); onScroll(); });
 
-    /* ===== Вспомогательное: HEAD с таймаутом ===== */
-    function headWithTimeout(url, timeoutMs=3000){
+    /* ===== Вспомогательное: HEAD с таймаутом (fallback) ===== */
+    function headWithTimeout(url, timeoutMs=2500){
       const controller = new AbortController();
       const t = setTimeout(()=>controller.abort(), timeoutMs);
       return fetch(url, {method:'HEAD', signal: controller.signal})
@@ -287,6 +291,7 @@
           telegramLink = document.getElementById("telegramLink");
 
     let currentImages = [], currentIndex = 0, selectedCar = "";
+    const imageCache = {}; // кэш списков изображений по slug
 
     // Открытие модалки по клику на карточку
     document.querySelectorAll(".car-card").forEach(card=>{
@@ -296,46 +301,56 @@
         carTitle.textContent = selectedCar;
 
         const slug = (selectedCar.toLowerCase().split(" ")[1] || "").replace(/[^a-z0-9\-]/g,'');
-        const base = "https://raw.githubusercontent.com/truecarsae/truecars-site/truecarsae-images/cars/" + slug + "/";
+        const rawBase = "https://raw.githubusercontent.com/truecarsae/truecars-site/truecarsae-images/cars/" + slug + "/";
+        const apiUrl = `https://api.github.com/repos/truecarsae/truecars-site/contents/cars/${slug}?ref=truecarsae-images`;
 
-        // Проверяем до 20 файлов HEAD-запросами (батчами по 5 для отзывчивости)
-        const MAX = 10, BATCH = 3;
-// Загружаем все PNG-файлы из папки GitHub автоматически
-let found = [];
-try {
-  const apiUrl = `https://api.github.com/repos/truecarsae/truecars-site/contents/cars/${slug}?ref=truecarsae-images`;
-  const response = await fetch(apiUrl);
-  if (response.ok) {
-    const files = await response.json();
-    found = files
-      .filter(f => f.name.toLowerCase().endsWith('.png'))
-      .map(f => f.download_url);
-  }
-} catch(e) {
-  console.error('Ошибка загрузки списка файлов:', e);
-}
-currentImages = found;
+        let found = [];
 
+        try {
+          if (imageCache[slug]) {
+            found = imageCache[slug];                 // 1) из кэша
+          } else {
+            // 2) GitHub API: 1 запрос — быстро и надёжно
+            const response = await fetch(apiUrl, { headers: { "Accept": "application/vnd.github.v3+json" }});
+            if (response.ok) {
+              const files = await response.json();
+              found = files
+                .filter(f => f.name.toLowerCase().endsWith('.png'))
+                .map(f => f.download_url)
+                .sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}))
+                .slice(0,10); // максимум 10 картинок
+              imageCache[slug] = found;
+            } else {
+              // 3) на всякий случай — фолбэк на HEAD (если лимиты/ошибка API)
+              const MAX = 10, BATCH = 3;
+              for (let start = 1; start <= MAX; start += BATCH){
+                const batch = [];
+                for (let i = start; i < start + BATCH && i <= MAX; i++){
+                  const url = `${rawBase}${i}.png`;
+                  batch.push(headWithTimeout(url).then(res => res.ok ? url : null));
+                }
+                const part = await Promise.all(batch);
+                found = found.concat(part.filter(Boolean));
+              }
+              imageCache[slug] = found;
+            }
+          }
+        } catch(e) {
+          console.error('Ошибка загрузки списка файлов:', e);
+        }
 
-        // Fallback: если в GitHub нет фото — берём картинку из карточки и показываем сразу (без подвисания)
+        currentImages = found;
+
+        // Fallback: если в GitHub нет фото — берём картинку из карточки и показываем сразу
         if (currentImages.length === 0) {
           const cardImg = card.querySelector("img").src;
           currentImages = [cardImg];
-          currentIndex = 0;
-          loader.style.display = "block";
-          modalImg.classList.remove("loaded");
-          modal.style.display = "block";
-          // Мгновенно показываем fallback (без ожидания onload)
-          modalImg.src = cardImg;
-          modalImg.classList.add("loaded");
-          loader.style.display = "none";
-          updateLinks();
-          return;
         }
 
         currentIndex = 0;
         showImage();
         modal.style.display = "block";
+        document.body.classList.add('no-scroll'); // блокируем фон
         updateLinks();
       });
     });
@@ -355,17 +370,17 @@ currentImages = found;
     prevBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
     nextBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
 
-    // Закрытие: крестик + клик по фону
-    function closeModal(){ modal.style.display = "none"; }
+    // Закрытие: крестик + клик по фону + Esc
+    function closeModal(){ modal.style.display = "none"; document.body.classList.remove('no-scroll'); }
     closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
     modal.addEventListener("click",(e)=>{ if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown",(e)=>{ if (e.key === "Escape" && modal.style.display === "block") closeModal(); });
 
     // Свайпы на мобильных по изображению
     let startX=0,endX=0;
-    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;});
-    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;});
-    modalImg.addEventListener("touchend",()=>{
-      if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
+    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;},{passive:true});
+    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;},{passive:true});
+    modalImg.addEventListener("touchend",()=>{ if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
       else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
       startX=0; endX=0;
     });
