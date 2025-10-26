@@ -1,102 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>True Cars Only</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; }
-    html { scroll-behavior:smooth; }
-    body { background-color:#3a3a3a; color:#fff; line-height:1.6; overflow-x:hidden; }
-    a { text-decoration:none; color:inherit; }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{background-color:#3a3a3a;color:#fff;line-height:1.6;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
 
-    /* ===== Parallax Background ===== */
-    .hero {
-      position:relative;
-      height:60vh;
-      min-height:420px;
-      background:
-        linear-gradient(to bottom, rgba(0,0,0,0.45), #3a3a3a 75%),
-        url("https://github.com/truecarsae/truecars-site/blob/truecarsae-images/dubai-skyline.png?raw=true") top center/cover no-repeat fixed;
-      display:flex; flex-direction:column; justify-content:flex-end; align-items:center; text-align:center;
-      padding:80px 20px 50px;
+    :root{
+      --header-bg:#1e1e1e;
+      --header-height:90px;
+      --header-height-scrolled:60px;
+      --bg-shift:0px; /* используется для параллакса */
     }
 
-    /* ===== Header & Logo ===== */
-    header { text-align:center; padding-top:20px; position:relative; z-index:1000; }
-    #main-logo { width:300px; transition:all 0.45s ease; }
-    .logo-fixed { position:fixed; top:20px; left:20px; width:110px; z-index:1000; }
-    @media(max-width:768px){ .logo-fixed{ width:80px; top:18px; left:18px; } }
+    /* ===== Header ===== */
+    header{
+      position:fixed;top:0;left:0;width:100%;
+      height:var(--header-height);
+      background:var(--header-bg);
+      display:flex;justify-content:center;align-items:center;
+      transition:height .35s ease,box-shadow .35s ease;
+      z-index:1000;
+      box-shadow:0 2px 8px rgba(0,0,0,0.4);
+      cursor:pointer; /* клик — наверх */
+    }
+    header.scrolled{height:var(--header-height-scrolled);}
+    #main-logo{
+      height:100%; width:auto; padding:0; /* логотип ровно по высоте полосы */
+      transition:filter .35s ease;
+      display:block;
+    }
+    header.scrolled #main-logo{filter:drop-shadow(0 0 4px rgba(0,0,0,.2));}
+    #header-spacer{height:var(--header-height);transition:height .35s ease;}
 
-    /* ===== Hero Text ===== */
-    .hero h1{ font-size:3rem; font-weight:300; letter-spacing:2px; margin-bottom:12px; }
-    .hero h2{ font-size:1.8rem; margin-bottom:12px; }
-    .hero p{ font-size:1.2rem; margin-bottom:25px; color:#ccc; }
-    .cta{ display:flex; gap:20px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
-    .cta a{ background:#fff; color:#1c1c1c; padding:15px 25px; border-radius:5px; font-weight:600; transition:0.3s; }
-    .cta a:hover{ background:#ffcc00; color:#818181; }
+    /* ===== Hero (динамический параллакс) ===== */
+    .hero{
+      position:relative;min-height:60vh;overflow:hidden;
+      display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+      text-align:center;padding:40px 20px 50px;
+      background:linear-gradient(to bottom,rgba(0,0,0,0.55),#3a3a3a 75%);
+    }
+    .hero::before{
+      content:"";position:absolute;top:0;left:0;width:100%;height:120%;
+      background:url("https://github.com/truecarsae/truecars-site/blob/truecarsae-images/dubai-skyline.png?raw=true") center/cover no-repeat;
+      transform:translateY(var(--bg-shift));
+      will-change:transform;
+      z-index:-1;
+    }
 
-    /* ===== Cars Section ===== */
-    .cars{ padding:60px 20px; max-width:1200px; margin:0 auto; }
-    .cars h2{ text-align:center; font-size:2.5rem; margin-bottom:40px; }
-    .car-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:30px; }
-    .car-card{ background:#2a2a2a; border-radius:10px; padding:20px; text-align:center; transition:0.3s; cursor:pointer; }
-    .car-card:hover{ background:#333; }
-    .car-card img{ max-width:100%; border-radius:10px; margin-bottom:15px; }
-    .car-card h3{ font-size:1.5rem; margin-bottom:10px; }
-    .car-card p{ font-size:1rem; color:#ccc; }
+    .hero h1{font-size:3rem;font-weight:300;letter-spacing:2px;margin-bottom:12px;}
+    .hero h2{font-size:1.8rem;margin-bottom:12px;}
+    .hero p{font-size:1.2rem;margin-bottom:25px;color:#ddd;}
+    .cta{
+      display:flex;gap:20px;flex-wrap:wrap;
+      justify-content:center;align-items:center;text-align:center;
+      margin-top:10px;
+    }
+    .cta a{background:#fff;color:#1c1c1c;padding:15px 25px;border-radius:5px;font-weight:600;transition:0.3s;}
+    .cta a:hover{background:#ffcc00;color:#818181;}
+
+    /* ===== Cars ===== */
+    .cars{padding:60px 20px;max-width:1200px;margin:0 auto;}
+    .cars h2{text-align:center;font-size:2.5rem;margin-bottom:40px;}
+    .car-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;}
+    .car-card{background:#2a2a2a;border-radius:10px;padding:20px;text-align:center;transition:0.3s;cursor:pointer;}
+    .car-card:hover{background:#333;transform:translateY(-5px);}
+    .car-card img{max-width:100%;border-radius:10px;margin-bottom:15px;object-fit:cover;aspect-ratio:16/9;}
+    .car-card h3{font-size:1.5rem;margin-bottom:10px;}
+    .car-card p{font-size:1rem;color:#ccc;}
 
     /* ===== Footer ===== */
-    footer{ text-align:center; padding:40px 20px; background:#111; color:#aaa; margin-top:40px; }
-    footer .contacts{ display:flex; justify-content:center; gap:30px; margin-bottom:20px; flex-wrap:wrap; }
-    footer .contacts a{ font-weight:500; }
+    footer{text-align:center;padding:40px 20px;background:#111;color:#aaa;margin-top:40px;}
+    footer .contacts{
+      display:flex;justify-content:center;align-items:center;gap:20px;margin-bottom:20px;flex-wrap:wrap;text-align:center;
+    }
+    footer .contacts a{font-weight:500;background:#222;padding:10px 15px;border-radius:6px;transition:.3s;}
+    footer .contacts a:hover{background:#ffcc00;color:#000;}
 
     /* ===== Modal ===== */
-    .modal{ display:none; position:fixed; z-index:2000; padding-top:60px; left:0; top:0; width:100%; height:100%;
-      overflow:auto; background-color:rgba(0,0,0,0.8); animation:fadeIn 0.4s ease; }
-    @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
-
-    .modal-content{ background-color:#2a2a2a; margin:auto; padding:20px; border-radius:12px; width:90%; max-width:700px;
-      position:relative; text-align:center; box-shadow:0 0 25px rgba(0,0,0,0.4); transform:scale(0.95); opacity:0; animation:modalAppear 0.4s forwards; }
-    @keyframes modalAppear{ to{ transform:scale(1); opacity:1; } }
-
-    .close{ color:#fff; position:absolute; top:10px; right:20px; font-size:28px; cursor:pointer; transition:0.2s; }
-    .close:hover{ color:#ffcc00; }
-
-    .carousel{ position:relative; }
-    .carousel img{ width:100%; border-radius:8px; margin-bottom:10px; opacity:0; transition:opacity 0.4s ease; }
-    .carousel img.loaded{ opacity:1; }
-
-    /* Loader */
-    .loader{ display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
-    .dot{ display:inline-block; width:10px; height:10px; margin:0 3px; background:#ffcc00; border-radius:50%;
-      animation:bounce 1s infinite ease-in-out; }
-    .dot:nth-child(2){ animation-delay:0.2s; } .dot:nth-child(3){ animation-delay:0.4s; }
-    @keyframes bounce{ 0%,80%,100%{transform:scale(0);} 40%{transform:scale(1);} }
-
-    .prev,.next{ cursor:pointer; position:absolute; top:45%; padding:10px; background:rgba(0,0,0,0.4); border:none;
-      color:white; font-size:22px; border-radius:50%; transform:translateY(-50%); transition:background 0.3s; }
-    .prev:hover,.next:hover{ background:rgba(255,255,255,0.2); }
-    .prev{ left:10px; } .next{ right:10px; }
-
-    .rental-form{ text-align:center; margin-top:15px; }
-    .rental-form label{ display:block; margin-bottom:8px; font-weight:500; font-size:1.2rem; }
-    .date-options{ display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:15px; flex-wrap:wrap; }
-    #startDate,#endDate{ padding:8px; border-radius:5px; border:none; outline:none; }
-    #monthlyBtn{ padding:8px 15px; border-radius:5px; border:none; cursor:pointer; background:#ffcc00; font-weight:bold; transition:0.3s; }
-    #monthlyBtn:hover{ background:#ffe680; }
-
-    .contact-links{ display:flex; justify-content:center; gap:20px; }
-    .contact-links a{ background:#fff; color:#000; padding:10px 20px; border-radius:6px; font-weight:600; transition:0.3s; }
-    .contact-links a:hover{ background:#ffcc00; color:#222; }
+    .modal{display:none;position:fixed;z-index:2000;padding-top:60px;left:0;top:0;width:100%;height:100%;overflow:auto;
+      background-color:rgba(0,0,0,0.8);animation:fadeIn 0.4s ease;}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+    .modal-content{background-color:#2a2a2a;margin:auto;padding:20px;border-radius:12px;width:90%;max-width:700px;position:relative;
+      text-align:center;box-shadow:0 0 25px rgba(0,0,0,0.4);transform:scale(0.95);opacity:0;animation:modalAppear 0.4s forwards;}
+    @keyframes modalAppear{to{transform:scale(1);opacity:1;}}
+    .close{color:#fff;position:absolute;top:10px;right:20px;font-size:28px;cursor:pointer;transition:0.2s;}
+    .close:hover{color:#ffcc00;}
+    .carousel{position:relative;}
+    .carousel img{width:100%;border-radius:8px;margin-bottom:10px;opacity:0;transition:opacity 0.4s ease;}
+    .carousel img.loaded{opacity:1;}
+    .loader{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+    .dot{display:inline-block;width:10px;height:10px;margin:0 3px;background:#ffcc00;border-radius:50%;animation:bounce 1s infinite ease-in-out;}
+    .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;}
+    @keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+    .prev,.next{cursor:pointer;position:absolute;top:45%;padding:10px;background:rgba(0,0,0,0.4);border:none;color:white;font-size:22px;
+      border-radius:50%;transform:translateY(-50%);transition:background 0.3s;}
+    .prev:hover,.next:hover{background:rgba(255,255,255,0.2);}
+    .prev{left:10px;} .next{right:10px;}
+    .rental-form{text-align:center;margin-top:15px;}
+    .rental-form label{display:block;margin-bottom:8px;font-weight:500;font-size:1.2rem;}
+    .date-options{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:15px;flex-wrap:wrap;}
+    #startDate,#endDate{padding:8px;border-radius:5px;border:none;outline:none;}
+    #monthlyBtn{padding:8px 15px;border-radius:5px;border:none;cursor:pointer;background:#ffcc00;font-weight:bold;transition:0.3s;}
+    #monthlyBtn:hover{background:#ffe680;}
+    .contact-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
+    .contact-links a{background:#fff;color:#000;padding:10px 20px;border-radius:6px;font-weight:600;transition:0.3s;}
+    .contact-links a:hover{background:#ffcc00;color:#222;}
   </style>
 </head>
 <body>
 
   <!-- Header -->
   <header id="top-header">
-    <img id="main-logo" src="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/Truecars.ae.png?raw=true" alt="logo">
+    <img id="main-logo" src="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/Truecars.ae.png?raw=true" alt="Truecars Logo">
   </header>
+  <!-- Spacer: контент строго под полосой хедера -->
+  <div id="header-spacer"></div>
 
   <!-- Hero -->
   <section class="hero">
@@ -117,32 +140,32 @@
     <h2>Our Cars</h2>
     <div class="car-grid">
       <div class="car-card">
-        <img src="https://dhihk6wcjzylk.cloudfront.net/carprices/media/catalog/689b185e8aaa1Hyundai_Sonata_Front.webp" alt="Hyundai Sonata 2024">
+        <img loading="lazy" src="https://dhihk6wcjzylk.cloudfront.net/carprices/media/catalog/689b185e8aaa1Hyundai_Sonata_Front.webp" alt="Hyundai Sonata 2024">
         <h3>Hyundai Sonata 2024</h3>
         <p>220 AED / day | 4,300 AED / month</p>
       </div>
       <div class="car-card">
-        <img src="https://www.hyundai.com/content/dam/hyundai/wallan/en/data/vehicle-thumbnail/product/azera-2024/small/azera-gn7-3.png" alt="Hyundai Azera 2024">
+        <img loading="lazy" src="https://www.hyundai.com/content/dam/hyundai/wallan/en/data/vehicle-thumbnail/product/azera-2024/small/azera-gn7-3.png" alt="Hyundai Azera 2024">
         <h3>Hyundai Azera 2024</h3>
         <p>310 AED / day | 6,200 AED / month</p>
       </div>
       <div class="car-card">
-        <img src="https://images.dealer.com/ddc/vehicles/2025/Kia/K5/Sedan/perspective/front-left/2025_20.png" alt="Kia K5 2024">
+        <img loading="lazy" src="https://images.dealer.com/ddc/vehicles/2025/Kia/K5/Sedan/perspective/front-left/2025_20.png" alt="Kia K5 2024">
         <h3>Kia K5 2024</h3>
         <p>200 AED / day | 4,100 AED / month</p>
       </div>
       <div class="car-card">
-        <img src="https://cdn.cetas.com.tr/Delivery/Public/Image/-1x-1/308_an2n9mye3c_aids7ir3p2.png" alt="Peugeot 308 2023">
+        <img loading="lazy" src="https://cdn.cetas.com.tr/Delivery/Public/Image/-1x-1/308_an2n9mye3c_aids7ir3p2.png" alt="Peugeot 308 2023">
         <h3>Peugeot 308 2023</h3>
         <p>170 AED / day | 2,700 AED / month</p>
       </div>
       <div class="car-card">
-        <img src="https://www.airportchevy.com/blogs/3573/wp-content/uploads/2023/11/2024-chevy-trax.png" alt="Chevrolet Trax 2023">
+        <img loading="lazy" src="https://www.airportchevy.com/blogs/3573/wp-content/uploads/2023/11/2024-chevy-trax.png" alt="Chevrolet Trax 2023">
         <h3>Chevrolet Trax 2023</h3>
         <p>170 AED / day | 2'700 AED / month</p>
       </div>
       <div class="car-card">
-        <img src="https://media.dealeralchemist.com/jellies/Hyundai/Palisade/C475975_WC9_Front.png?auto=compress%2Cformat" alt="Hyundai Palisade 2025">
+        <img loading="lazy" src="https://media.dealeralchemist.com/jellies/Hyundai/Palisade/C475975_WC9_Front.png?auto=compress%2Cformat" alt="Hyundai Palisade 2025">
         <h3>Hyundai Palisade 2025</h3>
         <p>700 AED / day | 12'000 AED / month</p>
       </div>
@@ -187,63 +210,109 @@
   </div>
 
   <script>
-  // Логотип-перемещение
-  const logo=document.getElementById("main-logo"),hero=document.querySelector(".hero"),triggerHeight=hero.offsetHeight*0.55;
-  window.addEventListener("scroll",()=>{ if(window.scrollY>triggerHeight){ logo.classList.add("logo-fixed"); } else{ logo.classList.remove("logo-fixed"); }});
-  logo.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+    /* ===== Header: уменьшение и клик-наверх ===== */
+    const header = document.getElementById('top-header');
+    const spacer = document.getElementById('header-spacer');
+    header.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-  // Модалка и галерея
-  const modal=document.getElementById("carModal"),modalImg=document.getElementById("modalImage"),carTitle=document.getElementById("carTitle"),
-    closeBtn=document.querySelector(".close"),prevBtn=document.querySelector(".prev"),nextBtn=document.querySelector(".next"),
-    loader=document.querySelector(".loader"),startDateInput=document.getElementById("startDate"),endDateInput=document.getElementById("endDate"),
-    monthlyBtn=document.getElementById("monthlyBtn"),whatsappLink=document.getElementById("whatsappLink"),telegramLink=document.getElementById("telegramLink");
-  let currentImages=[],currentIndex=0,selectedCar="";
+    function syncSpacer(){ spacer.style.height = header.offsetHeight + 'px'; }
+    function onScroll(){
+      const scrolled = window.scrollY > 60;
+      header.classList.toggle('scrolled', scrolled);
+      syncSpacer();
+      // Параллакс: чем больше прокрутка, тем сильнее смещение фона вверх
+      const y = Math.min(window.scrollY * 0.35, 250); // ограничим смещение
+      document.documentElement.style.setProperty('--bg-shift', `-${y}px`);
+    }
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', syncSpacer);
+    window.addEventListener('load', () => { syncSpacer(); onScroll(); });
 
-  document.querySelectorAll(".car-card").forEach(card=>{
-    card.addEventListener("click",()=>{
-      selectedCar=card.querySelector("h3").textContent; carTitle.textContent=selectedCar;
-      const slug=selectedCar.toLowerCase().split(" ")[1];
-      const base="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/cars/";
-      currentImages=Array.from({length:5},(_,i)=>`${base}${slug}/${i+1}.png?raw=true`);
-      currentIndex=0; showImage(); modal.style.display="block";
+    /* ===== Modal & Gallery ===== */
+    const modal = document.getElementById("carModal"),
+          modalImg = document.getElementById("modalImage"),
+          carTitle = document.getElementById("carTitle"),
+          closeBtn = document.querySelector(".close"),
+          prevBtn = document.querySelector(".prev"),
+          nextBtn = document.querySelector(".next"),
+          loader = document.querySelector(".loader"),
+          startDateInput = document.getElementById("startDate"),
+          endDateInput = document.getElementById("endDate"),
+          monthlyBtn = document.getElementById("monthlyBtn"),
+          whatsappLink = document.getElementById("whatsappLink"),
+          telegramLink = document.getElementById("telegramLink");
+
+    let currentImages = [], currentIndex = 0, selectedCar = "";
+
+    // Открытие модалки по клику на карточку
+    document.querySelectorAll(".car-card").forEach(card=>{
+      card.addEventListener("click",()=>{
+        selectedCar = card.querySelector("h3").textContent;
+        carTitle.textContent = selectedCar;
+
+        // slug по второй части имени ("Hyundai Sonata 2024" -> "sonata")
+        const slug = selectedCar.toLowerCase().split(" ")[1];
+        const base = "https://github.com/truecarsae/truecars-site/blob/truecarsae-images/cars/";
+        currentImages = Array.from({length:5}, (_,i)=> `${base}${slug}/${i+1}.png?raw=true`);
+
+        currentIndex = 0;
+        showImage();
+        modal.style.display = "block";
+        updateLinks(); // сгенерируем стартовые ссылки
+      });
     });
-  });
 
-  function showImage(){
-    loader.style.display="block"; modalImg.classList.remove("loaded");
-    const img=new Image(); img.src=currentImages[currentIndex];
-    img.onload=()=>{ modalImg.src=img.src; modalImg.classList.add("loaded"); loader.style.display="none"; };
-  }
+    function showImage(){
+      loader.style.display = "block";
+      modalImg.classList.remove("loaded");
+      const img = new Image();
+      img.src = currentImages[currentIndex];
+      img.onload = () => {
+        modalImg.src = img.src;
+        modalImg.classList.add("loaded");
+        loader.style.display = "none";
+      };
+    }
 
-  prevBtn.addEventListener("click",()=>{ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
-  nextBtn.addEventListener("click",()=>{ currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
-  closeBtn.addEventListener("click",()=>modal.style.display="none");
-  window.addEventListener("click",e=>{ if(e.target===modal)modal.style.display="none"; });
+    prevBtn.addEventListener("click",()=>{ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
+    nextBtn.addEventListener("click",()=>{ currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
+    closeBtn.addEventListener("click",()=> modal.style.display = "none");
+    window.addEventListener("click",(e)=>{ if(e.target===modal) modal.style.display = "none"; });
 
-  // Свайп для мобильных
-  let startX=0,endX=0;
-  modalImg.addEventListener("touchstart",e=>{ startX=e.touches[0].clientX; });
-  modalImg.addEventListener("touchmove",e=>{ endX=e.touches[0].clientX; });
-  modalImg.addEventListener("touchend",()=>{
-    if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
-    else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
-    startX=0; endX=0;
-  });
+    // Свайп на мобильных
+    let startX=0,endX=0;
+    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;});
+    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;});
+    modalImg.addEventListener("touchend",()=>{
+      if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
+      else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
+      startX=0; endX=0;
+    });
 
-  function updateLinks(){
-    const start=startDateInput.value,end=endDateInput.value;
-    let period="";
-    if(monthlyBtn.dataset.selected==="true"){ period="на помесячной основе"; }
-    else if(start&&end){ period=`с ${start} по ${end}`; }
-    const text=encodeURIComponent(`Здравствуйте! Я хочу арендовать ${selectedCar} ${period}. Подскажите, пожалуйста, доступна ли машина?`);
-    whatsappLink.href=`https://wa.me/971506402718?text=${text}`;
-    telegramLink.href=`https://t.me/+971506402718?text=${text}`;
-  }
+    // Генерация ссылок WhatsApp / Telegram
+    function updateLinks(){
+      const start = startDateInput.value;
+      const end = endDateInput.value;
+      let period = "";
 
-  startDateInput.addEventListener("change",updateLinks);
-  endDateInput.addEventListener("change",updateLinks);
-  monthlyBtn.addEventListener("click",()=>{ monthlyBtn.dataset.selected=monthlyBtn.dataset.selected==="true"?"false":"true";
-    monthlyBtn.style.background=monthlyBtn.dataset.selected==="true"?"#ffe680":"#ffcc00"; updateLinks(); });
-</script>
+      if (monthlyBtn.dataset.selected === "true") {
+        period = "на помесячной основе";
+      } else if (start && end) {
+        period = `с ${start} по ${end}`;
+      }
+
+      const text = encodeURIComponent(`Здравствуйте! Я хочу арендовать ${selectedCar} ${period}. Подскажите, пожалуйста, доступна ли машина?`);
+      whatsappLink.href = `https://wa.me/971506402718?text=${text}`;
+      telegramLink.href = `https://t.me/+971506402718?text=${text}`; /* оставляю ваши ссылки как просили */
+    }
+
+    startDateInput.addEventListener("change",updateLinks);
+    endDateInput.addEventListener("change",updateLinks);
+    monthlyBtn.addEventListener("click",()=>{
+      monthlyBtn.dataset.selected = monthlyBtn.dataset.selected === "true" ? "false" : "true";
+      monthlyBtn.style.background = monthlyBtn.dataset.selected === "true" ? "#ffe680" : "#ffcc00";
+      updateLinks();
+    });
+  </script>
 </body>
 </html>
