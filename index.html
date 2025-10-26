@@ -29,6 +29,8 @@
       height:var(--header-height);
       background:var(--header-bg);
       display:flex;justify-content:center;align-items:center;
+      /* резерв справа под переключатель языка, чтобы логотип его не перекрывал */
+      padding-right:72px;
       transition:height .35s ease,box-shadow .35s ease;
       z-index:1000;
       box-shadow:0 2px 8px rgba(0,0,0,0.4);
@@ -48,6 +50,7 @@
     #lang-switch{
       position:absolute; right:16px; top:50%; transform:translateY(-50%);
       display:flex; align-items:center; gap:8px; user-select:none;
+      pointer-events:auto;
     }
     .lang-btn{
       background:none; border:none; color:#aaa; font-weight:700; font-size:14px;
@@ -145,11 +148,14 @@
     .rent-fields.active{display:flex;}
     .rent-fields label{margin-bottom:6px;font-weight:700;color:#ddd;}
     .rent-fields .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-    .rent-fields input[type="date"], .rent-fields input[type="number"]{
+    .rent-fields input[type="date"], .rent-fields select{
       padding:8px 10px;border-radius:6px;border:1px solid #555;outline:none;background:#fff;color:#000;min-width:160px;
       transition:border-color .15s ease;
     }
-    .rent-fields input.invalid{border:2px solid var(--danger);}
+    /* compact select for months */
+    #monthlyMonths{min-width:90px; max-width:110px; text-align:center; font-weight:700;}
+
+    .rent-fields input.invalid, .rent-fields select.invalid{border:2px solid var(--danger);}
 
     .cost-box{display:none;background:#1f1f1f;border:1px dashed #444;border-radius:8px;padding:10px 12px;margin:8px auto 12px;max-width:480px;text-align:left;}
     .cost-line{display:flex;justify-content:space-between;margin:2px 0;}
@@ -161,6 +167,12 @@
     .contact-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:0;}
     .contact-row a{background:#fff;color:#000;padding:10px 18px;border-radius:6px;font-weight:700;transition:.2s;}
     .contact-row a:hover{background:#ffcc00;color:#222;}
+
+    /* Mobile adjustments to avoid overlap */
+    @media (max-width:600px){
+      header{padding-right:96px;} /* больше резерв под EN|RU */
+      #main-logo{height:60px;}
+    }
   </style>
 </head>
 <body>
@@ -272,7 +284,32 @@
         <label data-i18n="noteMonthly">Select start date and months</label>
         <div class="row">
           <input type="date" id="monthlyStart">
-          <input type="number" id="monthlyMonths" min="1" max="24" placeholder="Months" data-placeholder-en="Months" data-placeholder-ru="Месяцы">
+          <select id="monthlyMonths">
+            <option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+          </select>
         </div>
       </div>
 
@@ -451,9 +488,6 @@
           el.textContent = translations[lang][key];
         });
       });
-      // placeholder for months input
-      monthlyMonths.placeholder = monthlyMonths.getAttribute(`data-placeholder-${lang}`) || monthlyMonths.placeholder;
-
       // Prices on cards (day/month ↔ день/месяц)
       document.querySelectorAll('.price').forEach(p=>{
         const txt = p.getAttribute(`data-${lang}`);
@@ -482,6 +516,7 @@
     const savedLang = localStorage.getItem('lang') || 'en';
     setLang(savedLang);
 
+    // prevent header click when pressing language buttons
     btnEN.addEventListener('click', (e)=>{ e.stopPropagation(); setLang('en'); });
     btnRU.addEventListener('click', (e)=>{ e.stopPropagation(); setLang('ru'); });
 
@@ -489,10 +524,12 @@
     function setMinDates(){
       const today = toYMD(new Date());
       [dailyStart, dailyEnd, monthlyStart].forEach(inp => { if(inp) inp.min = today; });
+      if (dailyStart.value && dailyEnd.value < dailyStart.value) dailyEnd.value = dailyStart.value;
+      if (monthlyStart.value && monthlyStart.value < today) monthlyStart.value = today;
     }
     setMinDates();
 
-    // remove invalid border on input
+    // remove invalid border on input/select
     [dailyStart,dailyEnd,monthlyStart,monthlyMonths].forEach(inp=>{
       if(!inp) return;
       const handler = ()=> inp.classList.remove('invalid');
@@ -508,6 +545,7 @@
       fieldsDaily.classList.toggle('active', mode==='daily');
       fieldsMonthly.classList.toggle('active', mode==='monthly');
       [dailyStart,dailyEnd,monthlyStart,monthlyMonths].forEach(i=> i && i.classList.remove('invalid'));
+      setMinDates();
       hideCost();
       updateLinks();
     }
@@ -558,10 +596,10 @@
         }
       }
     }
-    dailyStart.addEventListener('change', recalc);
+    dailyStart.addEventListener('change', ()=>{ setMinDates(); recalc(); });
     dailyEnd.addEventListener('change', recalc);
-    monthlyStart.addEventListener('change', recalc);
-    monthlyMonths.addEventListener('input', recalc);
+    monthlyStart.addEventListener('change', ()=>{ setMinDates(); recalc(); });
+    monthlyMonths.addEventListener('change', recalc);
 
     function validate(){
       let ok = true;
@@ -620,11 +658,11 @@
     whatsappLink.addEventListener('click', handleSend);
     telegramLink.addEventListener('click', handleSend);
 
-    // parse prices from card text
+    // parse prices from card text (support EN & RU labels)
     function extractPrices(card){
       const text = card.querySelector('p')?.textContent || '';
-      const dayMatch = text.match(/([\d,'\s]+)\s*AED\s*\/\s*day/i);
-      const monMatch = text.match(/([\d,'\s]+)\s*AED\s*\/\s*month/i);
+      const dayMatch = text.match(/([\d,'\s]+)\s*AED\s*\/\s*(day|день)/i);
+      const monMatch = text.match(/([\d,'\s]+)\s*AED\s*\/\s*(month|месяц)/i);
       const toNum = s => s ? parseInt(s.replace(/[^0-9]/g,''),10) : 0;
       return { day: toNum(dayMatch?.[1]||''), mon: toNum(monMatch?.[1]||'') };
     }
@@ -745,7 +783,6 @@
       startX=0; endX=0; });
 
     /* ===== Initialize prices to saved language on load ===== */
-    // (чтобы при первом открытии сразу стояли нужные "день / месяц")
     window.addEventListener('load', ()=>{
       const lang = localStorage.getItem('lang') || 'en';
       applyTranslations(lang);
