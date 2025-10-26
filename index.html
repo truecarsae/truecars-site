@@ -122,7 +122,29 @@
 }
 
 /* стрелки тоже поверх изображения/лоадера */
-.prev, .next{ z-index: 3000; }
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scale(1);
+  font-size: 42px;
+  color: white;
+  background: none;
+  border: none;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  z-index: 3000;
+  user-select: none;
+}
+.prev:hover, .next:hover,
+.prev:active, .next:active {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.3); /* стрелка увеличивается */
+}
+.prev { left: 15px; }
+.next { right: 15px; }
+
+
 
 /* лоадер ниже крестика и стрелок, но поверх изображения */
 .loader{ z-index: 2990; }
@@ -265,23 +287,37 @@
   let currentImages = [], currentIndex = 0, selectedCar = "";
 
   // Открытие модалки по клику на карточку
-  document.querySelectorAll(".car-card").forEach(card=>{
-    card.addEventListener("click",(e)=>{
-      e.stopPropagation(); // чтобы "клик-вне" не сработал сразу
-      selectedCar = card.querySelector("h3").textContent;
-      carTitle.textContent = selectedCar;
+document.querySelectorAll(".car-card").forEach(card=>{
+  card.addEventListener("click", async (e)=>{
+    e.stopPropagation();
+    selectedCar = card.querySelector("h3").textContent;
+    carTitle.textContent = selectedCar;
 
-      // slug по второй части имени ("Hyundai Sonata 2024" -> "sonata")
-      const slug = (selectedCar.toLowerCase().split(" ")[1] || "").replace(/[^a-z0-9\-]/g,'');
-      const base = "https://github.com/truecarsae/truecars-site/blob/truecarsae-images/cars/";
-      currentImages = Array.from({length:5}, (_,i)=> `${base}${slug}/${i+1}.png?raw=true`);
+    const slug = selectedCar.toLowerCase().split(" ")[1];
+    const base = "https://raw.githubusercontent.com/truecarsae/truecars-site/truecarsae-images/cars/" + slug + "/";
 
-      currentIndex = 0;
-      showImage();
-      modal.style.display = "block";
-      updateLinks();
-    });
+    // Проверяем до 20 файлов
+    const promises = [];
+    for (let i = 1; i <= 20; i++) {
+      const url = `${base}${i}.png`;
+      promises.push(fetch(url, {method: "HEAD"}).then(res => res.ok ? url : null));
+    }
+    const results = await Promise.all(promises);
+    currentImages = results.filter(Boolean);
+
+    // Если в GitHub нет фото — используем то, что уже стоит на карточке
+    if (currentImages.length === 0) {
+      const cardImg = card.querySelector("img").src;
+      currentImages = [cardImg];
+    }
+
+    currentIndex = 0;
+    showImage();
+    modal.style.display = "block";
+    updateLinks();
   });
+});
+
 
   function showImage(){
     loader.style.display = "block";
