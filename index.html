@@ -111,12 +111,18 @@
     .modal.closing{animation:fadeOut .25s forwards;}
     @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
     @keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
+    /* не ловить клики, пока модалка закрывается (фикc iOS) */
+    .modal.closing{
+       pointer-events: none;
+      } 
+
 
     .modal-content{
       background-color:#2a2a2a;margin:auto;padding:20px;border-radius:12px;width:90%;max-width:700px;position:relative;
       text-align:center;box-shadow:0 0 25px rgba(0,0,0,0.4);
       transform:scale(0.95);opacity:0;
       animation:modalAppear .35s forwards;
+      will-change: opacity, transform;
     }
     .modal.open .modal-content{animation:modalAppear .35s forwards;}
     .modal.closing .modal-content{animation:modalDisappear .25s forwards;}
@@ -748,17 +754,31 @@
       document.body.classList.add('no-scroll');
     }
     function closeModal(){
-      if(!modal.classList.contains('open')) return;
-      modal.classList.remove('open');
-      modal.classList.add('closing');
-      const onAnimEnd = ()=> {
-        modal.style.display = 'none';
-        modal.classList.remove('closing');
-        document.body.classList.remove('no-scroll');
-        modal.removeEventListener('animationend', onAnimEnd);
-      };
-      modal.addEventListener('animationend', onAnimEnd);
-    }
+  if(!modal.classList.contains('open') && !modal.classList.contains('closing')) return;
+
+  // запускаем закрытие
+  modal.classList.remove('open');
+  modal.classList.add('closing');
+
+  // колбэк «всё, точно скрываем»
+  const finalize = () => {
+    modal.style.display = 'none';
+    modal.classList.remove('closing');
+    document.body.classList.remove('no-scroll');
+    modal.removeEventListener('animationend', finalize);
+    modal.removeEventListener('transitionend', finalize); // на всякий
+    // на всякий случай уберём лоадер, чтобы не «завис» посередине
+    if (loader) loader.style.display = 'none';
+  };
+
+  // 1) нормальный путь: дождались конца анимации
+  modal.addEventListener('animationend', finalize, { once: true });
+  modal.addEventListener('transitionend', finalize, { once: true });
+
+  // 2) fallback на iOS: если событие не пришло — скрываем принудительно
+  setTimeout(finalize, 450); // чуть больше, чем длительность анимации
+}
+
 
     closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
     modal.addEventListener("click",(e)=>{ if (e.target === modal) closeModal(); });
