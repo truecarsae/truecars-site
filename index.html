@@ -285,7 +285,7 @@
       <div class="rent-fields active" id="fieldsDaily">
         <label data-i18n="noteDaily">Select rental dates</label>
         <div class="row">
-          <input type="date" id="dailyStart">
+          <input type="date" id="dailyStart" min="">
           <input type="date" id="dailyEnd">
         </div>
       </div>
@@ -308,18 +308,6 @@
 <option value="10">10</option>
 <option value="11">11</option>
 <option value="12">12</option>
-<option value="13">13</option>
-<option value="14">14</option>
-<option value="15">15</option>
-<option value="16">16</option>
-<option value="17">17</option>
-<option value="18">18</option>
-<option value="19">19</option>
-<option value="20">20</option>
-<option value="21">21</option>
-<option value="22">22</option>
-<option value="23">23</option>
-<option value="24">24</option>
           </select>
         </div>
       </div>
@@ -539,6 +527,25 @@
       if (monthlyStart.value && monthlyStart.value < today) monthlyStart.value = today;
     }
     setMinDates();
+
+    // Блокируем выбор даты из прошлого на всех устройствах (включая iOS)
+    function enforceMinDate(input) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        input.addEventListener('change', () => {
+          const val = new Date(input.value);
+          if (val < today) {
+            // если дата из прошлого — сбрасываем и предупреждаем
+            input.value = '';
+            alert('You cannot select a date in the past.');
+          }
+        });
+      }
+
+// применяем ко всем полям
+[dailyStart, dailyEnd, monthlyStart].forEach(inp => enforceMinDate(inp));
+
 
     // remove invalid border on input/select
     [dailyStart,dailyEnd,monthlyStart,monthlyMonths].forEach(inp=>{
