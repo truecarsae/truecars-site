@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TRUE CAR RENTAL</title>
 
-  <!-- SEO / Open Graph (не влияет на верстку) -->
+  <!-- SEO / Open Graph -->
   <meta name="description" content="Rent new cars in Dubai with full insurance, no deposit, and free delivery. Truecars.ae." />
   <link rel="canonical" href="https://truecars.ae/">
   <meta property="og:type" content="website">
@@ -26,7 +26,7 @@
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
     html{scroll-behavior:smooth;}
     body{background-color:#3a3a3a;color:#fff;line-height:1.6;overflow-x:hidden;}
-    body.no-scroll{overflow:hidden;}
+    body.no-scroll{overflow:hidden;touch-action:none;}
     a{text-decoration:none;color:inherit;}
 
     :root{
@@ -37,6 +37,10 @@
       --danger:#ff3333;
       --muted:#bbb;
       --accent:#ffcc00;
+
+      /* длительности анимаций модалки */
+      --modal-fade: 280ms;
+      --modal-scale: 220ms;
     }
 
     /* ===== Header ===== */
@@ -45,8 +49,7 @@
       height:var(--header-height);
       background:var(--header-bg);
       display:flex;justify-content:center;align-items:center;
-      /* резерв справа под переключатель языка, чтобы логотип его не перекрывал */
-      padding-right:72px;
+      padding-right:72px; /* резерв справа под EN|RU */
       transition:height .35s ease,box-shadow .35s ease;
       z-index:1000;
       box-shadow:0 2px 8px rgba(0,0,0,0.4);
@@ -76,79 +79,40 @@
     #lang-switch .sep{ color:#888; }
 
     /* ===== Hero (parallax) ===== */
-    .hero {
-    position: relative;
-    min-height: 56vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* раньше было flex-end */
-    align-items: center;
-    text-align: center;
-    padding: 10px 18px 20px; /* теперь это влияет на вертикальное положение */
-    background: linear-gradient(to bottom, rgba(0,0,0,0.5), #3a3a3a 75%);
-  }
-
+    .hero{
+      position:relative;min-height:56vh;overflow:hidden;
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      text-align:center;padding:10px 18px 20px;
+      background:linear-gradient(to bottom,rgba(0,0,0,0.5),#3a3a3a 75%);
+    }
     .hero::before{
       content:"";position:absolute;top:0;left:0;width:100%;height:120%;
       background:url("https://github.com/truecarsae/truecars-site/blob/truecarsae-images/dubai-skyline.png?raw=true") center/cover no-repeat;
-      transform:translateY(var(--bg-shift));
-      will-change:transform;
-      z-index:-1;
+      transform:translateY(var(--bg-shift)); will-change:transform; z-index:-1;
       filter:brightness(0.9) contrast(1.1);
     }
     @media (max-height:700px){ .hero::before{height:100%;} }
 
     .hero h1{
-      font-size:2.4rem;
-      font-weight:800;
-      letter-spacing:.5px;
-      color:var(--accent);
-      text-transform:uppercase;
-      margin-bottom:10px;
-      line-height:1.15;
+      font-size:2.4rem;font-weight:800;letter-spacing:.5px;color:var(--accent);
+      text-transform:uppercase;margin-bottom:10px;line-height:1.15;
     }
-    .hero .subtitle{
-      font-size:1.15rem;
-      color:#e9e9e9;
-      margin-bottom:6px;
-      font-weight:500;
-      line-height:1.35;
-    }
-    .hero .subtext{
-      font-size:1.05rem;
-      color:var(--accent);
-      margin-bottom:4px;
-      font-weight:700;
-      line-height:1.3;
-    }
-    .hero .note{
-      font-size:.98rem;
-      color:#cfcfcf;
-      margin-bottom:14px;
-      line-height:1.3;
-      font-weight:400;
-    }
-    .cta{
-      display:flex;gap:16px;flex-wrap:wrap;
-      justify-content:center;align-items:center;text-align:center;margin-top:6px;
-    }
-    .cta a{
-      background:#fff;color:#1c1c1c;padding:12px 20px;border-radius:6px;font-weight:700;transition:0.25s;
-    }
+    .hero .subtitle{font-size:1.15rem;color:#e9e9e9;margin-bottom:6px;font-weight:500;line-height:1.35;}
+    .hero .subtext{font-size:1.05rem;color:var(--accent);margin-bottom:4px;font-weight:700;line-height:1.3;}
+    .hero .note{font-size:.98rem;color:#cfcfcf;margin-bottom:14px;line-height:1.3;font-weight:400;}
+    .cta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;text-align:center;margin-top:6px;}
+    .cta a{background:#fff;color:#1c1c1c;padding:12px 20px;border-radius:6px;font-weight:700;transition:0.25s;}
     .cta a:hover{background:#ffcc00;color:#1c1c1c;transform:translateY(-1px);}
 
     /* ===== Cars ===== */
-    .cars {padding: 60px 20px;max-width:1200px;margin:-60px auto 0; /* 🔹 добавили отрицательный margin-top */}
-
+    .cars{padding:60px 20px;max-width:1200px;margin:-60px auto 0;}
     .cars h2{text-align:center;font-size:2.2rem;margin-bottom:32px;}
     .car-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;}
     .car-card{background:#2a2a2a;border-radius:10px;padding:20px;text-align:center;transition:0.3s;cursor:pointer;}
     .car-card:hover{background:#333;transform:translateY(-5px);}
     .car-card img{
-      max-width:100%;border-radius:10px;margin-bottom:15px;
-      object-fit:cover;aspect-ratio:16/9; /* как было */
-      opacity:0;transition:opacity .45s ease; /* fade-in, размеров не меняет */
+      max-width:100%;border-radius:10px;margin-bottom:15px;object-fit:cover;aspect-ratio:16/9;
+      opacity:0;transition:opacity .45s ease;
     }
     .car-card img.img-loaded{opacity:1;}
     .car-card h3{font-size:1.5rem;margin-bottom:10px;}
@@ -160,30 +124,26 @@
     footer .contacts a{font-weight:500;background:#222;padding:10px 15px;border-radius:6px;transition:.3s;}
     footer .contacts a:hover{background:#ffcc00;color:#000;}
 
-    /* ===== Modal ===== */
+    /* ===== Modal (NEW transitions) ===== */
     .modal{
-      display:none;position:fixed;inset:0;z-index:2000;padding-top:60px;overflow:auto;
+      position:fixed;inset:0;z-index:2000;padding-top:60px;overflow:auto;
       background-color:rgba(0,0,0,0.8);
-      opacity:0;
+      opacity:0;visibility:hidden;pointer-events:none;
+      transition:opacity var(--modal-fade) ease, visibility 0s linear var(--modal-fade);
+      -webkit-overflow-scrolling: touch;
     }
-    .modal.open{display:block;animation:fadeIn .3s forwards;}
-    .modal.closing{animation:fadeOut .25s forwards;}
-    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-    @keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
-    /* не ловить клики, пока модалка закрывается (фикc iOS) */
-    .modal.closing{ pointer-events:none; }
-
+    .modal.open{
+      opacity:1;visibility:visible;pointer-events:auto;
+      transition:opacity var(--modal-fade) ease, visibility 0s;
+    }
     .modal-content{
       background-color:#2a2a2a;margin:auto;padding:20px;border-radius:12px;width:90%;max-width:700px;position:relative;
       text-align:center;box-shadow:0 0 25px rgba(0,0,0,0.4);
-      transform:scale(0.95);opacity:0;
-      animation:modalAppear .35s forwards;
+      transform:scale(0.96);opacity:0;
+      transition:opacity var(--modal-scale) ease, transform var(--modal-scale) ease;
       will-change: opacity, transform;
     }
-    .modal.open .modal-content{animation:modalAppear .35s forwards;}
-    .modal.closing .modal-content{animation:modalDisappear .25s forwards;}
-    @keyframes modalAppear{to{transform:scale(1);opacity:1;}}
-    @keyframes modalDisappear{from{transform:scale(1);opacity:1);}to{transform:scale(0.96);opacity:0;}}
+    .modal.open .modal-content{transform:scale(1);opacity:1;}
 
     .close{color:#fff;position:absolute;top:10px;right:20px;font-size:28px;cursor:pointer;transition:0.2s;z-index:3001;-webkit-tap-highlight-color: transparent;}
     .close:hover{color:#ffcc00;}
@@ -196,7 +156,6 @@
     .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;}
     @keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
 
-    /* Arrows (no circles) */
     .prev,.next{
       cursor:pointer;position:absolute;top:50%;transform:translateY(-50%) scale(1);
       font-size:42px;color:white;background:none;border:none;opacity:.8;
@@ -219,7 +178,6 @@
       padding:8px 10px;border-radius:6px;border:1px solid #555;outline:none;background:#fff;color:#000;min-width:160px;
       transition:border-color .15s ease;
     }
-    /* compact select for months */
     #monthlyMonths{min-width:90px; max-width:110px; text-align:center; font-weight:700;}
 
     .rent-fields input.invalid, .rent-fields select.invalid{border:2px solid var(--danger);}
@@ -233,7 +191,6 @@
     .request-label{margin-top:6px;margin-bottom:6px;color:#ccc;font-weight:700;}
     .contact-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:0;}
 
-    /* Круглые иконки-кнопки для мессенджеров */
     .circle-btn{
       width:52px;height:52px;border-radius:50%;
       background:#fff;display:flex;justify-content:center;align-items:center;
@@ -242,7 +199,7 @@
     .circle-btn:hover{background:#ffcc00;}
     .circle-btn img{width:28px;height:28px;object-fit:contain;}
 
-    /* Mobile adjustments to avoid overlap */
+    /* Mobile adjustments */
     @media (max-width:768px){
       header{padding-right:96px;}
       #main-logo{height:60px;}
@@ -261,7 +218,6 @@
   <!-- Header -->
   <header id="top-header">
     <img id="main-logo" src="https://github.com/truecarsae/truecars-site/blob/truecarsae-images/Truecars.ae.png?raw=true" alt="Truecars Logo">
-    <!-- Language switcher -->
     <div id="lang-switch" role="group" aria-label="Language switch">
       <button class="lang-btn active" data-lang="en" id="btnEN">EN</button>
       <span class="sep">|</span>
@@ -270,7 +226,7 @@
   </header>
   <div id="header-spacer"></div>
 
-  <!-- Hero (обновлённая иерархия) -->
+  <!-- Hero -->
   <section class="hero">
     <h1 data-i18n="heroH1">FULL INSURANCE INCLUDED</h1>
     <p class="subtitle" data-i18n="heroH2a">New cars. Top trims. The most comfortable experience.</p>
@@ -278,7 +234,6 @@
     <p class="note" data-i18n="heroP2">Across all Dubai, including airports</p>
     <div class="cta">
       <a href="https://wa.me/971506402718" target="_blank" rel="noopener">WhatsApp</a>
-      <!-- Telegram в hero и футере укажем на username -->
       <a href="https://t.me/truecars_ae" target="_blank" rel="noopener">Telegram</a>
       <a href="https://instagram.com/truecars.ae" target="_blank" rel="noopener">Instagram</a>
     </div>
@@ -333,8 +288,8 @@
   </footer>
 
   <!-- Modal -->
-  <div id="carModal" class="modal" aria-modal="true" role="dialog">
-    <div class="modal-content">
+  <div id="carModal" class="modal" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="modal-content" role="document">
       <span class="close" role="button" aria-label="Close">&times;</span>
       <div class="carousel">
         <button class="prev" aria-label="Previous">&#10094;</button>
@@ -342,7 +297,6 @@
         <div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <button class="next" aria-label="Next">&#10095;</button>
       </div>
-
       <h2 id="carTitle"></h2>
 
       <!-- Rent tabs -->
@@ -366,18 +320,10 @@
         <div class="row">
           <input type="date" id="monthlyStart">
           <select id="monthlyMonths">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+            <option value="10">10</option><option value="11">11</option><option value="12">12</option>
           </select>
         </div>
       </div>
@@ -393,7 +339,6 @@
 
       <div class="request-label" data-i18n="request">Request:</div>
       <div class="contact-row">
-        <!-- Круглые кнопки-иконки -->
         <a id="whatsappLink" class="circle-btn" target="_blank" rel="noopener" aria-label="WhatsApp">
           <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">
         </a>
@@ -431,7 +376,6 @@
         .then(r => { clearTimeout(t); return r; })
         .catch(() => { clearTimeout(t); return { ok:false }; });
     }
-    // date helpers
     function toYMD(d){
       const yyyy = d.getFullYear();
       const mm = String(d.getMonth()+1).padStart(2,'0');
@@ -471,7 +415,6 @@
           nextBtn = document.querySelector(".next"),
           loader = document.querySelector(".loader");
 
-    // Rent elements
     const tabDaily = document.getElementById('tabDaily');
     const tabMonthly = document.getElementById('tabMonthly');
     const fieldsDaily = document.getElementById('fieldsDaily');
@@ -494,10 +437,10 @@
 
     let currentImages = [], currentIndex = 0, selectedCar = "";
     const imageCache = {}; // cache by slug
-    let rentMode = 'daily'; // 'daily' | 'monthly'
-    let currentDailyPrice = 0, currentMonthlyPrice = 0; // parsed from card
+    let rentMode = 'daily';
+    let currentDailyPrice = 0, currentMonthlyPrice = 0;
 
-    /* ===== Language handling ===== */
+    /* ===== i18n ===== */
     const translations = {
       en: {
         heroH1: "FULL INSURANCE INCLUDED",
@@ -560,41 +503,26 @@
     const rootHtml = document.documentElement;
 
     function applyTranslations(lang){
-      // text nodes
       i18nSelectors.forEach(key=>{
         document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el=>{
           el.textContent = translations[lang][key];
         });
       });
-      // Prices on cards (day/month ↔ день/месяц)
       document.querySelectorAll('.price').forEach(p=>{
         const txt = p.getAttribute(`data-${lang}`);
         if (txt) p.textContent = txt;
       });
-
-      // highlight active button
       btnEN.classList.toggle('active', lang==='en');
       btnRU.classList.toggle('active', lang==='ru');
-
-      // set html attrs
       rootHtml.setAttribute('lang', lang);
       rootHtml.setAttribute('data-lang', lang);
-
-      // recalc & links
       recalc();
       updateLinks();
     }
 
-    function setLang(lang){
-      localStorage.setItem('lang', lang);
-      applyTranslations(lang);
-    }
-
-    // init language
+    function setLang(lang){ localStorage.setItem('lang', lang); applyTranslations(lang); }
     const savedLang = localStorage.getItem('lang') || 'en';
     setLang(savedLang);
-
-    // prevent header click when pressing language buttons
     btnEN.addEventListener('click', (e)=>{ e.stopPropagation(); setLang('en'); });
     btnRU.addEventListener('click', (e)=>{ e.stopPropagation(); setLang('ru'); });
 
@@ -607,21 +535,16 @@
     }
     setMinDates();
 
-    // Блокируем выбор даты из прошлого на всех устройствах (включая iOS)
+    // iOS защитный контроль
     function enforceMinDate(input) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = new Date(); today.setHours(0,0,0,0);
       input.addEventListener('change', () => {
         const val = new Date(input.value);
-        if (val < today) {
-          input.value = '';
-          alert('You cannot select a date in the past.');
-        }
+        if (val < today) { input.value = ''; alert('You cannot select a date in the past.'); }
       });
     }
     [dailyStart, dailyEnd, monthlyStart].forEach(inp => enforceMinDate(inp));
 
-    // remove invalid border on input/select
     [dailyStart,dailyEnd,monthlyStart,monthlyMonths].forEach(inp=>{
       if(!inp) return;
       const handler = ()=> inp.classList.remove('invalid');
@@ -671,9 +594,7 @@
         const s = dailyStart.value, e = dailyEnd.value;
         const d = daysInclusive(s,e);
         if (d>0 && currentDailyPrice>0){
-          const base = d * currentDailyPrice;
-          const durationText = translations[lang].durationDays(d);
-          showCost(base, durationText, "");
+          showCost(d * currentDailyPrice, translations[lang].durationDays(d), "");
         }
       } else {
         const s = monthlyStart.value;
@@ -682,9 +603,7 @@
           const base = m * currentMonthlyPrice;
           const end = addMonths(s, m);
           const endFmt = end ? fmt(toYMD(end)) : "";
-          const durationText = translations[lang].durationMonths(m);
-          const endText = endFmt ? translations[lang].endDate(endFmt) : "";
-          showCost(base, durationText, endText);
+          showCost(base, translations[lang].durationMonths(m), endFmt ? translations[lang].endDate(endFmt) : "");
         }
       }
     }
@@ -711,14 +630,11 @@
       return ok;
     }
 
-    // Telegram helper
     function buildTelegramHref(text){
       const encoded = encodeURIComponent(text);
-      // открываем чат с username, с предзаполненным текстом (работает в клиентах Telegram)
       return `https://t.me/${TELEGRAM_USERNAME}?text=${encoded}`;
     }
 
-    // Localized messages for WhatsApp/Telegram
     function updateLinks(){
       const lang = rootHtml.getAttribute('data-lang') || 'en';
       let text = "";
@@ -726,26 +642,18 @@
         const s = fmt(dailyStart.value);
         const e = fmt(dailyEnd.value);
         const d = daysInclusive(dailyStart.value, dailyEnd.value);
-        if (s && e && d>0){
-          text = translations[lang].msgDaily(selectedCar, d, s, e);
-        }
+        if (s && e && d>0){ text = translations[lang].msgDaily(selectedCar, d, s, e); }
       } else {
         const s = fmt(monthlyStart.value);
         const m = parseInt(monthlyMonths.value,10);
-        if (s && m>0){
-          text = translations[lang].msgMonthly(selectedCar, m, s);
-        }
+        if (s && m>0){ text = translations[lang].msgMonthly(selectedCar, m, s); }
       }
       if (!text){
-        const greet = translations[lang].greeting;
-        const ask = translations[lang].askAvail;
-        text = `${greet} ${ask}`;
+        text = `${translations[lang].greeting} ${translations[lang].askAvail}`;
       }
       const encoded = encodeURIComponent(text);
       whatsappLink.href = `https://wa.me/971506402718?text=${encoded}`;
       telegramLink.href = buildTelegramHref(text);
-
-      // обновим и ссылку в футере — базовый текст приветствия
       if (footerTelegram){
         const baseText = `${translations[lang].greeting} ${translations[lang].askAvail}`;
         footerTelegram.href = buildTelegramHref(baseText);
@@ -758,12 +666,11 @@
         return;
       }
       updateLinks();
-      hideCost(); // hide after sending
+      hideCost();
     }
     whatsappLink.addEventListener('click', handleSend);
     telegramLink.addEventListener('click', handleSend);
 
-    // parse prices from card text (support EN & RU labels)
     function extractPrices(card){
       const text = card.querySelector('p')?.textContent || '';
       const dayMatch = text.match(/([\d,'\s]+)\s*AED\s*\/\s*(day|день)/i);
@@ -772,10 +679,109 @@
       return { day: toNum(dayMatch?.[1]||''), mon: toNum(monMatch?.[1]||'') };
     }
 
-    /* ===== Gallery: GitHub API + cache + fallback ===== */
+    /* ===== Modal: robust open/close (no auto-close, no black screen) ===== */
+    let isOpening = false;
+    let isClosing = false;
+    let forceTimer = null;
+
+    function resetModalStateHard(){
+      // Полный reset DOM-состояния перед открытием — ключ к iOS-устойчивости
+      modal.classList.remove('open');
+      modal.style.opacity = '0';
+      modal.style.visibility = 'hidden';
+      modal.setAttribute('aria-hidden','true');
+      document.body.classList.remove('no-scroll');
+      if (forceTimer){ clearTimeout(forceTimer); forceTimer = null; }
+      // Сброс изображения/лоадера
+      loader.style.display = 'none';
+      modalImg.classList.remove('loaded');
+      modalImg.removeAttribute('src');
+    }
+
+    function openModal(){
+      if (isOpening) return;
+      isOpening = true;
+      isClosing = false;
+      if (forceTimer){ clearTimeout(forceTimer); forceTimer = null; }
+
+      // Жёсткий reset и reflow (важно для повторных открытий на iOS)
+      resetModalStateHard();
+      void modal.offsetHeight; // reflow
+
+      modal.classList.add('open');
+      modal.style.opacity = ''; // вернём под управление CSS
+      modal.style.visibility = '';
+      modal.setAttribute('aria-hidden','false');
+      document.body.classList.add('no-scroll');
+
+      // Снятие флага после окончания transition
+      setTimeout(()=>{ isOpening = false; }, 320);
+    }
+
+    function closeModal(){
+      if (isClosing) return;
+      isClosing = true;
+      isOpening = false;
+      if (!modal.classList.contains('open')){ isClosing = false; return; }
+
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      // Фоллбек-таймер (если transitionend не пришёл)
+      if (forceTimer){ clearTimeout(forceTimer); }
+      forceTimer = setTimeout(()=>{
+        resetModalStateHard();
+        isClosing = false;
+        forceTimer = null;
+      }, 360);
+
+      // По завершению плавно обнулим всё
+      modal.addEventListener('transitionend', function onEnd(e){
+        if (e.target !== modal) return;
+        resetModalStateHard();
+        isClosing = false;
+        modal.removeEventListener('transitionend', onEnd);
+      }, { once: true });
+    }
+
+    closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
+    modal.addEventListener("click",(e)=>{ if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown",(e)=>{ if (e.key === "Escape" && modal.classList.contains('open')) closeModal(); });
+
+    /* ===== Image show & controls ===== */
+    function showImage(){
+      loader.style.display = "block";
+      modalImg.classList.remove("loaded");
+      // Снимаем прежний onload (если был)
+      const img = new Image();
+      img.onload = () => {
+        modalImg.src = img.src;
+        modalImg.classList.add("loaded");
+        loader.style.display = "none";
+      };
+      img.onerror = () => {
+        loader.style.display = "none";
+      };
+      img.src = currentImages[currentIndex];
+    }
+
+    prevBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
+    nextBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
+
+    // Mobile swipes
+    let startX=0,endX=0;
+    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;},{passive:true});
+    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;},{passive:true});
+    modalImg.addEventListener("touchend",()=>{
+      if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
+      else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
+      startX=0; endX=0;
+    });
+
+    /* ===== Cards click: load images + open modal ===== */
     document.querySelectorAll(".car-card").forEach(card=>{
       card.addEventListener("click", async (e)=>{
         e.stopPropagation();
+
         selectedCar = card.querySelector("h3").textContent;
         carTitle.textContent = selectedCar;
 
@@ -783,7 +789,7 @@
         currentDailyPrice = day;
         currentMonthlyPrice = mon;
 
-        // reset form each open
+        // reset формы
         setMode('daily');
         dailyStart.value = ''; dailyEnd.value = '';
         monthlyStart.value = ''; monthlyMonths.value = '';
@@ -824,81 +830,21 @@
               imageCache[slug] = found;
             }
           }
-        } catch(e) {
-          console.error('Image list error:', e);
-        }
+        } catch(err) { console.error('Image list error:', err); }
 
-        currentImages = found;
-        if (currentImages.length === 0) {
-          const cardImg = card.querySelector("img").src;
-          currentImages = [cardImg];
-        }
-
+        currentImages = found.length ? found : [card.querySelector("img").src];
         currentIndex = 0;
-        showImage();
+
+        // сначала показываем модалку (для плавности), затем грузим первую картинку
         openModal();
-      });
+        showImage();
+      }, { passive: true });
     });
 
-    /* ===== Modal open/close with fade ===== */
-    function openModal(){
-      modal.classList.remove('closing');
-      modal.classList.add('open');
-      modal.style.display = 'block';
-      document.body.classList.add('no-scroll');
-      // UX: сразу прокрутим к началу, чтобы на мобильных модалка была полностью видна
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function closeModal(){
-      if(!modal.classList.contains('open') && !modal.classList.contains('closing')) return;
-      modal.classList.remove('open');
-      modal.classList.add('closing');
-      const finalize = () => {
-        modal.style.display = 'none';
-        modal.classList.remove('closing');
-        document.body.classList.remove('no-scroll');
-        modal.removeEventListener('animationend', finalize);
-        modal.removeEventListener('transitionend', finalize);
-        if (loader) loader.style.display = 'none';
-      };
-      modal.addEventListener('animationend', finalize, { once: true });
-      modal.addEventListener('transitionend', finalize, { once: true });
-      setTimeout(finalize, 450);
-    }
-
-    closeBtn.addEventListener("click",(e)=>{ e.stopPropagation(); closeModal(); });
-    modal.addEventListener("click",(e)=>{ if (e.target === modal) closeModal(); });
-    document.addEventListener("keydown",(e)=>{ if (e.key === "Escape" && modal.classList.contains('open')) closeModal(); });
-
-    /* ===== Image show & controls ===== */
-    function showImage(){
-      loader.style.display = "block";
-      modalImg.classList.remove("loaded");
-      const img = new Image();
-      img.src = currentImages[currentIndex];
-      img.onload = () => {
-        modalImg.src = img.src;
-        modalImg.classList.add("loaded");
-        loader.style.display = "none";
-      };
-    }
-    prevBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); });
-    nextBtn.addEventListener("click",(e)=>{ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; showImage(); });
-
-    // Mobile swipes
-    let startX=0,endX=0;
-    modalImg.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;},{passive:true});
-    modalImg.addEventListener("touchmove",e=>{endX=e.touches[0].clientX;},{passive:true});
-    modalImg.addEventListener("touchend",()=>{ if(startX-endX>50){ currentIndex=(currentIndex+1)%currentImages.length; showImage(); }
-      else if(endX-startX>50){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; showImage(); }
-      startX=0; endX=0; });
-
-    /* ===== Initialize prices to saved language on load + fade-in карточек ===== */
+    /* ===== Init on load ===== */
     window.addEventListener('load', ()=>{
       const lang = localStorage.getItem('lang') || 'en';
       applyTranslations(lang);
-
-      // плавное появление картинок карточек (не влияет на размеры)
       document.querySelectorAll('.car-card img').forEach(img=>{
         if (img.complete) img.classList.add('img-loaded');
         else img.addEventListener('load', ()=>img.classList.add('img-loaded'), {once:true});
