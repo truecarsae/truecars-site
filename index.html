@@ -81,14 +81,16 @@
       position:relative;min-height:56vh;overflow:hidden;
       display:flex;flex-direction:column;justify-content:center;align-items:center;
       text-align:center;padding:10px 18px 20px;
-      background:linear-gradient(to bottom,rgba(0,0,0,0.5),#3a3a3a 75%);
+      background:#3a3a3a;
     }
     .hero::before{
       content:"";position:absolute;top:0;left:0;width:100%;height:120%;
       background:url("assets/image-01.webp") center/cover no-repeat;
-      transform:translateY(var(--bg-shift)); will-change:transform; z-index:-1;
+      transform:translateY(var(--bg-shift)); will-change:transform; z-index:0;
       filter:brightness(0.9) contrast(1.1);
     }
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.5),#3a3a3a 75%);z-index:1;pointer-events:none;}
+    .hero > *{position:relative;z-index:2;}
     @media (max-height:700px){ .hero::before{height:100%;} }
 
     .hero h1{
@@ -109,7 +111,7 @@
     .car-card{background:#2a2a2a;border-radius:10px;padding:20px;text-align:center;transition:0.3s;cursor:pointer;}
     .car-card:hover{background:#333;transform:translateY(-5px);}
     .car-card img{
-      width:100%;border-radius:10px;margin-bottom:15px;object-fit:cover;aspect-ratio:16/9;
+      width:100%;height:auto;display:block;border-radius:10px;margin-bottom:15px;object-fit:contain;aspect-ratio:16/9;
       opacity:0;transition:opacity .45s ease;
     }
     .car-card img.img-loaded{opacity:1;}
@@ -211,7 +213,7 @@
     }
   
     .close{background:#222;border:0;border-radius:50%;width:44px;height:44px;right:8px;top:8px;line-height:1;}
-    .modal{padding: max(16px,env(safe-area-inset-top)) 0 max(16px,env(safe-area-inset-bottom));overscroll-behavior:contain;}
+    .modal{padding:60px 0 max(24px,env(safe-area-inset-bottom));overscroll-behavior:contain;}
     .carousel{aspect-ratio:4/3; background:#222; border-radius:8px;}
     .carousel img{height:100%;object-fit:contain;margin:0;touch-action:pan-y;}
     .terms,.form-error{font-size:.9rem;margin:10px auto;max-width:480px;}
@@ -221,8 +223,10 @@
     .lang-btn{min-width:44px;min-height:44px;}
     #main-logo{max-width:100%;object-fit:contain;}
     .hero{isolation:isolate;}
-    @media(max-width:768px){.modal-content{width:calc(100% - 24px);padding:16px;} .rent-fields .row{width:100%;} .rent-fields input[type=date]{min-width:0;max-width:100%;font-size:16px;} .rent-fields select{font-size:16px;} .cars{padding-left:12px;padding-right:12px;} }
+    @media(max-width:768px){.modal{padding-top:max(12px,env(safe-area-inset-top));}.modal-content{width:calc(100% - 24px);padding:16px;} .rent-fields .row{width:100%;} .rent-fields input[type=date]{min-width:0;max-width:100%;font-size:16px;} .rent-fields select{font-size:16px;} .cars{padding-left:12px;padding-right:12px;} }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;} *,*::before,*::after{transition:none!important;animation:none!important;} .hero::before{transform:none;will-change:auto;} }
+    .cars h2{margin-bottom:12px;}
+    .catalog-price-note{font-size:.82rem;text-align:center;margin:0 auto 14px;}
     .catalog-toolbar{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 24px;}
     .sort-button{min-height:44px;padding:10px 18px;border:1px solid #ffcc00;border-radius:6px;background:#222;color:#ffcc00;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,color .2s;max-width:100%;}
     .sort-button:hover{background:#ffcc00;color:#222;}
@@ -256,7 +260,7 @@
 
   <!-- Cars -->
   <section class="cars">
-    <h2 data-i18n="carsTitle">Our Cars</h2><p id="catalogPriceNote" class="terms" style="text-align:center;margin-bottom:24px"></p>
+    <h2 data-i18n="carsTitle">Our Cars</h2><p id="catalogPriceNote" class="terms catalog-price-note"></p>
     <div class="catalog-toolbar"><button id="priceSort" class="sort-button" type="button">Sort</button></div>
     <div class="car-grid">
       <div class="car-card" role="button" tabindex="0" data-daily-price="320" data-monthly-price="4200" data-car-id="sonata">
@@ -1023,7 +1027,7 @@
     function refreshTerms(){
       const ru=rootHtml.dataset.lang==='ru';
       document.getElementById('catalogPriceNote').textContent=ru?'Цены без НДС. К итоговой стоимости добавляется 5%.':'Prices exclude VAT. 5% is added to the total.';
-      document.getElementById('rentalTerms').textContent=ru?'Цены без НДС. К итогу добавляется 5%. С 1-го по 2-е число — одни сутки. Возврат — в то же время, что и получение; время согласуется с менеджером. Наличие автомобиля подтверждается менеджером.':'Prices exclude VAT; 5% is added to the total. From the 1st to the 2nd is one rental day. Return is at the same time as pickup; the time is agreed with our team. Availability is confirmed by our team.';
+      document.getElementById('rentalTerms').textContent=ru?'К цене добавляется 5% НДС. 1–2 число = 1 сутки. Возврат — в то же время, что и получение.':'5% VAT is added. From the 1st to the 2nd = one day. Return at the same time as pickup.';
       document.querySelectorAll('.car-card').forEach(c=>{c.setAttribute('aria-label',c.querySelector('h3').textContent);});
       closeBtn.setAttribute('aria-label',ru?'Закрыть':'Close');
       dailyStart.setAttribute('aria-label',ru?'Начало аренды':'Rental start date');dailyEnd.setAttribute('aria-label',ru?'Дата возврата':'Return date');
